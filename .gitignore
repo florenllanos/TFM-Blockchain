@@ -160,4 +160,12 @@ dist
 .history
 .ionide
 
+# DynamoDB Local files
+.dynamodb/
+
+docs/.env.example
+
+# Hardhat bundle
+bundle/
+
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
