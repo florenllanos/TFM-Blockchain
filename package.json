@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/florenllanos/TMF-Blockchain.git"
+    "url": "git+https://github.com/florenllanos/TFM-Blockchain.git"
   },
   "keywords": [
     "TFM"
@@ -16,9 +16,9 @@
   "author": "Floren",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/florenllanos/TMF-Blockchain/issues"
+    "url": "https://github.com/florenllanos/TFM-Blockchain/issues"
   },
-  "homepage": "https://github.com/florenllanos/TMF-Blockchain#readme",
+  "homepage": "https://github.com/florenllanos/TFM-Blockchain#readme",
   "devDependencies": {
     "hardhat": "^2.23.0"
   }
