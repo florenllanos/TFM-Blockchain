@@ -3,8 +3,11 @@
 
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
 
-module.exports = buildModule("LotTKModule", (m) => {
+module.exports = buildModule("DeployModule", (m) => {
 
+  const vacunaTK = m.contract("VacunaTK");
+  const cartillaTK = m.contract("CartillaTK");
   const lotTK = m.contract("LotTK");
-  return { lotTK };
+
+  return { vacunaTK, cartillaTK, lotTK };
 });
