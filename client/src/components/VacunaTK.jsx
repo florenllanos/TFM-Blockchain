@@ -12,6 +12,7 @@ function VacunaTKForm({ cuenta }) {
     const [dataCaducitat, setDataCaducitat] = useState('');
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
+    const [vacunas, setVacunas] = useState([]); // Vacunas para mostrar las que se van creando.
 
     useEffect(() => {
         const initializeContract = async () => {
@@ -21,6 +22,9 @@ function VacunaTKForm({ cuenta }) {
                 const signer = await provider.getSigner();
                 const newContract = new ethers.Contract(adresaContracte, abiContracte, signer);
                 setContract(newContract);
+                
+                // Carregar les vacunes existents al carregar el component
+                await fetchVacunes(newContract, cuenta);
             } else {
                 console.log("Contracte null");
                 setContract(null);
@@ -29,6 +33,17 @@ function VacunaTKForm({ cuenta }) {
 
         initializeContract();
     }, [cuenta]);
+
+    const fetchVacunes = async (contract, cuenta) => {
+        try {
+            if (contract && cuenta) {
+                const vacunesEmpresa = await contract.getVacunesEmpresa(cuenta);
+                setVacunas(vacunesEmpresa);
+            }
+        } catch (error) {
+            console.error("Error obtenint vacunes:", error);
+        }
+    };
 
     const mintToken = async (e) => {
         e.preventDefault();
@@ -53,6 +68,9 @@ function VacunaTKForm({ cuenta }) {
             setTermolabil(false);
             setTempConservacio(0);
             setDataCaducitat('');
+
+            // Actualizamos el listado de vacunas justo después de crear una.
+            await fetchVacunes(contract, cuenta);
 
         } catch (error) {
             console.error('Error minting token:', error);
@@ -86,6 +104,33 @@ function VacunaTKForm({ cuenta }) {
                 <button type="submit">Mint Token</button>
             </form>
             {message && <p>{message}</p>}
+
+            {/* Tabla de Vacunas */}
+            <h2>Vacunas Creadas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Vacuna</th>
+                        <th>Termolábil</th>
+                        <th>Temperatura Conservación</th>
+                        <th>Fecha Caducidad</th>
+                        <th>Asignada Lot</th>
+                        <th>Administrada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {vacunas.map((vacuna, index) => (
+                        <tr key={index}>
+                            <td>{vacuna.idVacuna}</td>
+                            <td>{vacuna.termolabil ? 'Sí' : 'No'}</td>
+                            <td>{vacuna.tempConservacio}</td>
+                            <td>{vacuna.dataCaducitat}</td>
+                            <td>{vacuna.asignadaLot ? 'Sí' : 'No'}</td>
+                            <td>{vacuna.administrada ? 'Sí' : 'No'}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }
