@@ -4,6 +4,7 @@ import './App.css';
 import WalletConnectButton from './components/Wallet';
 import VacunaTK from './components/VacunaTK';
 import LotTK from './components/LotTK';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
   const [userAccount, setUserAccount] = useState(null);
@@ -20,8 +21,10 @@ function App() {
   return (
     <div className="App">
       <WalletConnectButton cuentaConectada={ handleConnect } />
-      <VacunaTK cuenta={ userAccount } />
-      <LotTK cuenta={ userAccount } />
+      <Routes>        
+        <Route path="/vacuna" element = { <VacunaTK cuenta={ userAccount } /> } />
+        <Route path="/lot" element = { <LotTK cuenta={ userAccount } /> } />
+      </Routes>
     </div>
   );
 }
