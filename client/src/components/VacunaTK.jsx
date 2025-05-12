@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json'; // Importa el ABI.
 
-const adresaContracte = "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0"; // Adreça contracte.
+const adresaContracte = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Adreça contracte.
 const abiContracte = VacunaTK.abi;
 
 function VacunaTKForm({ cuenta }) {
@@ -80,7 +80,7 @@ function VacunaTKForm({ cuenta }) {
 
     return (
         <div>
-            <h2>Crear Token de Vacuna</h2>
+            <h2>Crear token de vacuna</h2>
             <form onSubmit={mintToken}>
                 <div>
                     <label>ID Vacuna:</label>
@@ -105,16 +105,16 @@ function VacunaTKForm({ cuenta }) {
             </form>
             {message && <p>{message}</p>}
 
-            {/* Tabla de Vacunas */}
-            <h2>Vacunas Creadas</h2>
+            {/* Taula de Vacunas */}
+            <h2>Vacunes creats</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>ID Vacuna</th>
-                        <th>Termolábil</th>
-                        <th>Temperatura Conservación</th>
-                        <th>Fecha Caducidad</th>
-                        <th>Asignada Lot</th>
+                        <th>ID vacuna</th>
+                        <th>Termolàbil</th>
+                        <th>Temperatura conservació</th>
+                        <th>Data caducitat</th>
+                        <th>Assignada Lot</th>
                         <th>Administrada</th>
                     </tr>
                 </thead>

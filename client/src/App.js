@@ -3,6 +3,7 @@ import { useState } from 'react';
 import './App.css';
 import WalletConnectButton from './components/Wallet';
 import VacunaTK from './components/VacunaTK';
+import LotTK from './components/LotTK';
 
 function App() {
   const [userAccount, setUserAccount] = useState(null);
@@ -20,6 +21,7 @@ function App() {
     <div className="App">
       <WalletConnectButton cuentaConectada={ handleConnect } />
       <VacunaTK cuenta={ userAccount } />
+      <LotTK cuenta={ userAccount } />
     </div>
   );
 }
