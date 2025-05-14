@@ -25,7 +25,7 @@ function App() {
       <Routes>        
         <Route path="/vacuna" element = { <VacunaTK cuenta={ userAccount } /> } />
         <Route path="/lot" element = { <LotTK cuenta={ userAccount } /> } />
-        <Route path="/transferir-vacuna-lote" element = { <TransferirVacunaLote cuenta={ userAccount } /> } />
+        <Route path="/transferir-vacuna-lot" element = { <TransferirVacunaLote cuenta={ userAccount } /> } />
       </Routes>
     </div>
   );

@@ -3,10 +3,10 @@ import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json';
 import LotTK from '../contratos/LotTK.json';
 
-const vacunaContractAddress = ""; // Contracte de VacunaTK
+const vacunaContractAddress = process.env.REACT_APP_VACUNATK; // Contracte de VacunaTK
 const vacunaContractABI = VacunaTK.abi;
 
-const lotContractAddress = ""; // Contracte de LotTK
+const lotContractAddress = process.env.REACT_APP_LOTTK; // Contracte de LotTK
 const lotContractABI = LotTK.abi;
 
 function TransferirVacunaLote({ cuenta }) {
@@ -46,6 +46,7 @@ function TransferirVacunaLote({ cuenta }) {
         try {
             if (contract && account) {
                 const vacunasEmpresa = await contract.getVacunesEmpresa(account);
+                console.log("Vacunas empresa: ", vacunasEmpresa);
                 setVacunas(vacunasEmpresa);
             }
         } catch (error) {
