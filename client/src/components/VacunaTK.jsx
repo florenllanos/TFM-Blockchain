@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json'; // Importa el ABI.
 
-const adresaContracte = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Adreça contracte.
+const adresaContracte = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // Adreça contracte.
+//const adresaContracte = process.env.REACT_APP_VACUNATK; // Adreça contracte.
 const abiContracte = VacunaTK.abi;
+
+console.log("eo ", process.env.REACT_APP_VACUNATK);
 
 function VacunaTKForm({ cuenta }) {
     const [idVacuna, setIdVacuna] = useState('');
@@ -13,6 +16,8 @@ function VacunaTKForm({ cuenta }) {
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
     const [vacunas, setVacunas] = useState([]); // Vacunas para mostrar las que se van creando.
+
+    console.log("eo2 ", process.env.REACT_APP_VACUNATK);
 
     useEffect(() => {
         const initializeContract = async () => {
