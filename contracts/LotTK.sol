@@ -14,6 +14,7 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
 
     // Estructura amb les dades del lot.
     struct Lot {
+        uint256 idToken;
         string idLot;
         string fabricant;
         string nomLot;
@@ -90,7 +91,9 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
     constructor() ERC721("LoteTK", "LTK") {}
 
     function mint(address to, string memory _idLot, string memory _fabricant, string memory _nomLot, string memory _dataFabricacio) public {
+        
         Lot memory newLot = Lot({
+            idToken: tokenId,
             idLot: _idLot,
             fabricant: _fabricant,
             nomLot: _nomLot,            
@@ -99,16 +102,14 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
         });
         lotsFabricant[to].push(newLot);
         safeMint(to, newLot);
+        tokenId++;
     }
    
     function safeMint(address to, Lot memory _newLot) public {    
-        //_tokenIdCounter.increment();
-        //uint256 tokenId = _tokenIdCounter.current();
-        lots[tokenId] = _newLot;                   
-        tokenIdToTokenOwner[tokenId] = to;
+        lots[_newLot.idToken] = _newLot;                   
+        tokenIdToTokenOwner[_newLot.idToken] = to;
         tokenOwnerToTokenCount[to]++;                             
-        _safeMint(to, tokenId);
-        tokenId++;
+        _safeMint(to, _newLot.idToken);
     }
 
     function isContract(address _addr) internal view returns (bool) {

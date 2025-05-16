@@ -9,6 +9,7 @@ contract VacunaTK is ERC721 {
 
     // Estructura amb les dades de la vacuna.
     struct Vacuna {
+        uint256 idToken;
         string idVacuna;
         bool termolabil;
         int16 tempConservacio;
@@ -34,6 +35,7 @@ contract VacunaTK is ERC721 {
 
     function mint(address to, string memory _idVacuna, bool _termolabil, int16 _tempConservacio, string memory _dataCaducitat) public {
         Vacuna memory newVacuna = Vacuna({
+            idToken: tokenId,
             idVacuna: _idVacuna,
             termolabil: _termolabil,
             tempConservacio: _tempConservacio,            
@@ -43,14 +45,12 @@ contract VacunaTK is ERC721 {
         });
         vacunesFabricant[to].push(newVacuna);
         safeMint(to, newVacuna);
+        tokenId++;
     }
    
-    function safeMint(address to, Vacuna memory _newVacuna) public { 
-        //_tokenIdCounter.increment();
-        //uint256 tokenId = _tokenIdCounter.current();
-        vacunas[tokenId]= _newVacuna;       
-        _safeMint(to, tokenId);
-        tokenId++;       
+    function safeMint(address to, Vacuna memory _newVacuna) public {
+        vacunas[_newVacuna.idToken]= _newVacuna;
+        _safeMint(to, _newVacuna.idToken);               
     }
 
     // Retorna el propietari del contracte.

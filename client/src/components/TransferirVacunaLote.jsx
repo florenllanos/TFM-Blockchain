@@ -46,7 +46,7 @@ function TransferirVacunaLote({ cuenta }) {
         try {
             if (contract && account) {
                 const vacunasEmpresa = await contract.getVacunesEmpresa(account);
-                console.log("Vacunas empresa: ", vacunasEmpresa);
+                console.log("Vacunas empresa: ", vacunasEmpresa.idToken);
                 setVacunas(vacunasEmpresa);
             }
         } catch (error) {
@@ -58,6 +58,7 @@ function TransferirVacunaLote({ cuenta }) {
         try {
             if (contract && account) {
                 const lotesEmpresa = await contract.getLotsEmpresa(account);
+                console.log("Vacunas empresa: ", lotesEmpresa.idLot);
                 setLotes(lotesEmpresa);
             }
         } catch (error) {
@@ -74,11 +75,17 @@ function TransferirVacunaLote({ cuenta }) {
 
         try {
             setMessage("Transfiriendo vacuna...");
-            const tx = await vacunaContract.safeTransferFrom(
+            console.log("cuenta ", cuenta);
+            console.log("lotContractAddress ", lotContractAddress);
+            console.log("selectedVacunaId ", selectedVacunaId);
+            console.log("selectedLotId ", ethers.encodeBytes32String(selectedLotId));
+            console.log("selectedLotId 32 ", padLeft32Zero(selectedLotId, 16)); 
+
+            const tx = await vacunaContract["safeTransferFrom(address,address,uint256,bytes)"](
                 cuenta,
                 lotContractAddress,
                 selectedVacunaId,
-                ethers.encodeBytes32String(selectedLotId) // Pasar selectedLotId como bytes
+                padLeft32Zero(selectedLotId, 16)
             );
             await tx.wait();
             setMessage(`Vacuna ${selectedVacunaId} transferida al Lote ${selectedLotId} con éxito!`);
@@ -92,6 +99,18 @@ function TransferirVacunaLote({ cuenta }) {
         }
     };
 
+    /* "Genera" a 32 posicions (0 a l'esquerra) el número de lot.
+    */
+    const padLeft32Zero = (valor, longitud) => {
+        let numHex = ethers.toBeHex(valor);
+        const longDesitjada = longitud * 2;
+        const paddingLong = longDesitjada - (numHex.length - 2);
+        const padding = "0".repeat(Math.max(0, paddingLong));
+        const paddedHexString = "0x" + padding + numHex.slice(2);
+
+        return paddedHexString;
+    }
+
     return (
         <div>
             <h2>Transferir Vacuna a Lote</h2>
@@ -100,8 +119,8 @@ function TransferirVacunaLote({ cuenta }) {
                 <label>Seleccionar Vacuna:</label>
                 <select value={selectedVacunaId} onChange={(e) => setSelectedVacunaId(e.target.value)}>
                     <option value="">Selecciona una vacuna</option>
-                    {vacunas.map((vacuna, index) => (
-                        <option key={index} value={index}>
+                    {vacunas.map((vacuna, index) => (                        
+                        <option key={index} value={vacuna.idToken}>
                             {vacuna.idVacuna}
                         </option>
                     ))}
@@ -113,7 +132,7 @@ function TransferirVacunaLote({ cuenta }) {
                 <select value={selectedLotId} onChange={(e) => setSelectedLotId(e.target.value)}>
                     <option value="">Selecciona un lote</option>
                     {lotes.map((lote, index) => (
-                        <option key={index} value={index}>
+                        <option key={index} value={lote.idToken}>
                             {lote.idLot}
                         </option>
                     ))}
