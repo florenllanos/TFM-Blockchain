@@ -170,5 +170,6 @@ bundle/
 /cache
 /artifacts
 ignition/deployments/chain-31337
+ignition/deployments/chain-1337
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
