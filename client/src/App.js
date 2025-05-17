@@ -6,6 +6,7 @@ import VacunaTK from './components/VacunaTK';
 import LotTK from './components/LotTK';
 import TransferirVacunaLote from './components/TransferirVacunaLote';
 import TransferirLote from './components/TransferirLote';
+import PermisInfermera from './components/PermisInfermera';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/lot" element = { <LotTK cuenta={ userAccount } /> } />
         <Route path="/transferir-vacuna-lot" element = { <TransferirVacunaLote cuenta={ userAccount } /> } />
         <Route path="/transferir-lot" element = { <TransferirLote cuenta={ userAccount } /> } />
+        <Route path="/permis-infermera" element = { <PermisInfermera cuenta={ userAccount } /> } />
       </Routes>
     </div>
   );
