@@ -6,8 +6,6 @@ import VacunaTK from '../contratos/VacunaTK.json'; // Importa el ABI.
 const adresaContracte = process.env.REACT_APP_VACUNATK; // Adreça contracte.
 const abiContracte = VacunaTK.abi;
 
-console.log("eo ", process.env.REACT_APP_VACUNATK);
-
 function VacunaTKForm({ cuenta }) {
     const [idVacuna, setIdVacuna] = useState('');
     const [termolabil, setTermolabil] = useState(false);
@@ -16,8 +14,6 @@ function VacunaTKForm({ cuenta }) {
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
     const [vacunas, setVacunas] = useState([]); // Vacunas para mostrar las que se van creando.
-
-    console.log("eo2 ", process.env.REACT_APP_VACUNATK);
 
     useEffect(() => {
         const initializeContract = async () => {
