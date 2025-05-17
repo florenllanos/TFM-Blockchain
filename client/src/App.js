@@ -5,6 +5,7 @@ import WalletConnectButton from './components/Wallet';
 import VacunaTK from './components/VacunaTK';
 import LotTK from './components/LotTK';
 import TransferirVacunaLote from './components/TransferirVacunaLote';
+import TransferirLote from './components/TransferirLote';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/vacuna" element = { <VacunaTK cuenta={ userAccount } /> } />
         <Route path="/lot" element = { <LotTK cuenta={ userAccount } /> } />
         <Route path="/transferir-vacuna-lot" element = { <TransferirVacunaLote cuenta={ userAccount } /> } />
+        <Route path="/transferir-lot" element = { <TransferirLote cuenta={ userAccount } /> } />
       </Routes>
     </div>
   );
