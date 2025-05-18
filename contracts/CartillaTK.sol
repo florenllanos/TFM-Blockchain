@@ -12,10 +12,14 @@ import {IERC998ERC721TopDown} from "./interfaces/IERC998ERC721TopDown.sol";
 
 contract CartillaTK is ERC721, IERC998ERC721TopDown {
     // Estructura dades cartilla.
-    struct Cartilla {        
+    struct Cartilla {
+        uint256 idToken;        
         string hashCip;
         bool permisAdministrar;
     }
+
+    // Pacient --> cartilla. A partir de l'adreça de un pacient mapegem la seva cartilla.
+    mapping(address => Cartilla) private cartillaPacient;
 
     // Mapping de lots a partir del id del Token ERC721, podem obtenir la informació de la cartilla.
     mapping(uint256 => Cartilla) private cartilles;
@@ -86,21 +90,20 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
 
     function mint(address to,  string memory _hashCip) public {
         Cartilla memory newCartilla = Cartilla({
+            idToken: tokenId,
             hashCip: _hashCip,
             permisAdministrar: false
         });
-
         safeMint(to, newCartilla);
+        tokenId++;
     }
    
     function safeMint(address to, Cartilla memory _newCartilla) public  {
-        //_tokenIdCounter.increment();
-        //uint256 tokenId = _tokenIdCounter.current();
-        cartilles[tokenId] = _newCartilla;                 
-        tokenIdToTokenOwner[tokenId] = to;
-        tokenOwnerToTokenCount[to]++;  
-        _safeMint(to, tokenId);
-        tokenId++;
+        cartilles[_newCartilla.idToken] = _newCartilla;                 
+        tokenIdToTokenOwner[_newCartilla.idToken] = to;
+        tokenOwnerToTokenCount[to]++;
+        cartillaPacient[to] = _newCartilla;  
+        _safeMint(to, _newCartilla.idToken);
     }
 
 
@@ -315,5 +318,9 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
     function setNoPermisAdministrar(uint256 _tokenId) public {
         require(cartilles[_tokenId].permisAdministrar == true);  
         cartilles[_tokenId].permisAdministrar = false;
+    }
+
+    function getCartillaPacient(address _patientAddress) public view returns (Cartilla memory) {
+        return cartillaPacient[_patientAddress];
     }
 }

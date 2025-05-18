@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import CartillaTK from '../contratos/CartillaTK.json';
 
-const lotContractAddress = process.env.REACT_APP_CARTILLATK; // Contracte de CartillaTK
-const lotContractABI = CartillaTK.abi;
+const cartillaContractAddress = process.env.REACT_APP_CARTILLATK; // Contracte de CartillaTK
+const cartillaContractABI = CartillaTK.abi;
 
 function CartillaPacient({ cuenta }) {
     const [cartillaContract, setCartillaContract] = useState(null);
-    const [permisoBool, setPermisoBool] = useState("false");
+    const [permisoBool, setPermisoBool] = useState(false);
     //const [selectedLotId, setSelectedLotId] = useState('');
     const [direccionContrato, setDireccionContrato] = useState('');
+    const [cartillaPacient, setCartillaPacient] = useState('');
+    const [vacunesPacient, setVacunesPacient] = useState([]);
     const [message, setMessage] = useState('');
 
     useEffect(() => {
@@ -19,12 +21,12 @@ function CartillaPacient({ cuenta }) {
                 const signer = await provider.getSigner();
 
                 const cartillaTKContract = new ethers.Contract(cartillaContractAddress, cartillaContractABI, signer);
-                setLotContract(cartillaTKContract);
+                setCartillaContract(cartillaTKContract);
 
-                //await fetchLotes(lotTKContract, cuenta);
+                await fetchVacunesPacient(cartillaContract, cuenta);
 
             } else {
-                setLotContract(null);
+                setCartillaContract(null);
             }
         };
 
@@ -43,21 +45,45 @@ function CartillaPacient({ cuenta }) {
         }
     };*/
 
-    const permisCartilla = async () => {
+    const fetchVacunesPacient = async (contract, account) => {
+        try {
+            if (contract && account) {
+                console.log("FetchVacunesPacient", account);
+                const cartilla = await contract.getCartillaPacient(account);                
+                setCartillaPacient(cartilla);
+                console.log("Cartilla del pacient (idToken): ", cartillaPacient.idToken);
+
+                const vacunesPacient = await contract.getDadesVacunesCartilla(cartillaPacient.idToken);
+                setVacunesPacient(vacunesPacient);  
+            }
+        } catch (error) {
+            console.error("Error obtenint Cartilla per el pacient:", error);
+        }
+    };
+
+    const permisCartilla = async (event) => {
         /*if (!direccionContrato) {
             setMessage("Seleccioni un compte");
             return;
         }*/
 
+        const checked = event.target.checked;
         try {
             //setMessage("Donant permisos...");
-
-            const tx = await cartillaContract.setApprovalForAll(direccionContrato,permisoBool);
+            let tx;
+            let missatge;
+            if(checked) {
+                tx = await cartillaContract.setPermisAdministrar(cartillaPacient.idToken);
+                missatge = "Permisos concedits";                
+            } else {
+                tx = await cartillaContract.setNoPermisAdministrar(cartillaPacient.idToken);
+                missatge = "Permisos no concedits";
+            }
+            
             await tx.wait();
-            setMessage('Permisos concedits');
+            setMessage(missatge);
+            setPermisoBool(checked);
 
-            // Actualizar las listas después de la transferencia
-            //await fetchLotes(lotContract, cuenta);
         } catch (error) {
             console.error("Error al transferir el lote:", error);
             setMessage(`Error: ${error.message}`);
@@ -68,14 +94,14 @@ function CartillaPacient({ cuenta }) {
         setDireccionContrato(event.target.value);
     };
 
-    const cambioPermiso = (event) => {
+    /*const cambioPermiso = (event) => {
         const nuevoValor = event.target.checked;
         setPermisoBool(nuevoValor);
-  };
+    };*/
 
     return (
         <div>
-            <h2>Permiso enfermera</h2>
+            <h2>Vacunes pacient</h2>
             <div>
                 <label htmlFor="direccionContrato">Dirección del Contrato Destino:</label>
                     <input
@@ -91,13 +117,46 @@ function CartillaPacient({ cuenta }) {
                     <input
                     type="checkbox"
                     checked={permisoBool}
-                    onChange={cambioPermiso}
+                    onChange={permisCartilla}
                     />
                 </label>
             </div>
-            <button onClick={permisVacunesLot}>Transferir Lot</button>
+            {/*<button onClick={permisCartilla}>Permís registre vacuna</button>*/}
 
             {message && <p>{message}</p>}
+
+            {/* Taula de vacunes per al pacient */}
+            <h2>Vacunes administrades</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Constracte Vacuna</th>
+                        <th>Id Vacuna</th>
+                        <th>Id Token Vacuna</th>
+                        <th>Id Vacuna</th>
+                        <th>Termolabil</th>
+                        <th>Temp conservació</th>
+                        <th>Data caducitat</th>
+                        <th>Asignada lot</th>
+                        <th>Administrada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {vacunesPacient.map((vacuna, index) => (
+                        <tr key={index}>
+                            <td>{vacuna.contracteVacuna}</td>
+                            <td>{vacuna.idVacunaToken}</td>
+                            <td>{vacuna.vacuna.idToken}</td>
+                            <td>{vacuna.vacuna.idVacuna}</td>
+                            <td>{vacuna.vacuna.termolabil}</td>
+                            <td>{vacuna.vacuna.tempConservacio}</td>
+                            <td>{vacuna.vacuna.dataCaducitat}</td>
+                            <td>{vacuna.vacuna.asignadaLot}</td>
+                            <td>{vacuna.vacuna.administrada}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 }

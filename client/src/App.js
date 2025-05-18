@@ -8,6 +8,7 @@ import TransferirVacunaLote from './components/TransferirVacunaLote';
 import TransferirLote from './components/TransferirLote';
 import PermisInfermera from './components/PermisInfermera';
 import CartillaTK from './components/CartillaTK';
+import CartillaPacient from './components/CartillaPacient';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/transferir-lot" element = { <TransferirLote cuenta={ userAccount } /> } />
         <Route path="/permis-infermera" element = { <PermisInfermera cuenta={ userAccount } /> } />
         <Route path="/cartilla" element = { <CartillaTK cuenta={ userAccount } /> } />
+        <Route path="/cartilla-pacient" element = { <CartillaPacient cuenta={ userAccount } /> } />
       </Routes>
     </div>
   );

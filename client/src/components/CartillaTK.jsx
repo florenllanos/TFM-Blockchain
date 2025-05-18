@@ -55,9 +55,8 @@ function CartillaTKForm({ cuenta }) {
         try {
             setMessage("Minting token...");            
             const tx = await contract.mint(direccionContrato, cipHash);
-            await tx.wait();
-            console.log("Minteo");
-            setMessage("Token minted successfully!");
+            await tx.wait();            
+            setMessage("Token minted successfully!! ");
             // Limpiar el formulario
             setDireccionContrato('');
             setCipHash('');

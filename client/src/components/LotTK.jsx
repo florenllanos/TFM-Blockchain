@@ -115,7 +115,7 @@ function LotTKForm({ cuenta }) {
                     {lots.map((lot, index) => (
                         <tr key={index}>
                             <td>{lot.idLot}</td>
-                            <td>{lot.fabrican}</td>
+                            <td>{lot.fabricant}</td>
                             <td>{lot.nomLot}</td>
                             <td>{lot.dataFabricacio}</td>
                         </tr>
