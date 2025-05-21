@@ -27,7 +27,7 @@ contract VacunaTK is ERC721 {
     // Contador automàtic per evitar repeticions en el tokenId.
     //using Counters for Counters.Counter;
     //Counters.Counter private _tokenIdCounter;
-    uint256 private tokenId = 0;
+    uint256 private tokenId = 1;
 
     address public owner;
 

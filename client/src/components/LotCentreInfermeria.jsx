@@ -9,7 +9,7 @@ const vacunaContractABI = VacunaTK.abi;
 const lotContractAddress = process.env.REACT_APP_LOTTK; // Contracte de LotTK
 const lotContractABI = LotTK.abi;
 
-function TransferirVacunaLote({ cuenta }) {
+function LotCentreInfermeria({ cuenta }) {
     const [vacunaContract, setVacunaContract] = useState(null);
     const [lotContract, setLotContract] = useState(null);
     const [vacunas, setVacunas] = useState([]);
@@ -18,11 +18,15 @@ function TransferirVacunaLote({ cuenta }) {
     const [selectedLotId, setSelectedLotId] = useState('');
     const [message, setMessage] = useState('');
 
+    const [tokensAprovats, setTokensAprovats] = useState([]);
+    const [signer, setSigner] = useState('');
+
     useEffect(() => {
         const initializeContracts = async () => {
             if (window.ethereum && cuenta) {
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner();
+                setSigner(signer);
 
                 const vacunaTKContract = new ethers.Contract(vacunaContractAddress, vacunaContractABI, signer);
                 setVacunaContract(vacunaTKContract);
@@ -30,8 +34,9 @@ function TransferirVacunaLote({ cuenta }) {
                 const lotTKContract = new ethers.Contract(lotContractAddress, lotContractABI, signer);
                 setLotContract(lotTKContract);
 
-                await fetchVacunas(vacunaTKContract, cuenta);
-                await fetchLotes(lotTKContract, cuenta);
+                //await fetchVacunas(vacunaTKContract, cuenta);
+                //await fetchLotes(lotTKContract, cuenta);
+                await fetchVacunesAprovades(vacunaTKContract, cuenta);
 
             } else {
                 setVacunaContract(null);
@@ -41,6 +46,22 @@ function TransferirVacunaLote({ cuenta }) {
 
         initializeContracts();
     }, [cuenta]);
+
+    const fetchVacunesAprovades = async (contract, account) => {
+        const tokensAprovats = await contract.queryFilter('ApprovalForAll', 0, 'latest'); // https://docs.ethers.org/v5/api/contract/example/#erc20-queryfilter
+        console.log(tokensAprovats);
+        
+        const aprovats = new Set();
+        tokensAprovats.forEach((event) => {
+            if (event.args.operator.toLowerCase() === signer.toLowerCase() && event.args.aprovats) {
+                aprovats.add(event.args.owner);
+            } else if (event.args.operator.toLowerCase() === signer.toLowerCase() && !event.args.aprovats && aprovats.has(event.args.owner)) {
+                aprovats.delete(event.args.owner);
+            }
+        });
+        setTokensAprovats(Array.from(aprovats));
+        console.log("Tokens aprovats: ", aprovats)
+    };
 
     const fetchVacunas = async (contract, account) => {
         try {
@@ -68,13 +89,19 @@ function TransferirVacunaLote({ cuenta }) {
 
 
     const transferirVacuna = async () => {
-        /*if (!vacunaContract || !lotContract || !selectedVacunaId || !selectedLotId) {
+        if (!vacunaContract || !lotContract || !selectedVacunaId || !selectedLotId) {
             setMessage("Por favor, selecciona una vacuna y un lote.");
             return;
-        }*/
+        }
 
         try {
             setMessage("Transfiriendo vacuna...");
+            console.log("cuenta ", cuenta);
+            console.log("lotContractAddress ", lotContractAddress);
+            console.log("selectedVacunaId ", selectedVacunaId);
+            console.log("selectedLotId ", ethers.encodeBytes32String(selectedLotId));
+            console.log("selectedLotId 32 ", padLeft32Zero(selectedLotId, 16)); 
+
             const tx = await vacunaContract["safeTransferFrom(address,address,uint256,bytes)"](
                 cuenta,
                 lotContractAddress,
@@ -140,4 +167,4 @@ function TransferirVacunaLote({ cuenta }) {
     );
 }
 
-export default TransferirVacunaLote;
+export default LotCentreInfermeria;

@@ -42,7 +42,7 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
     // Contador automàtic per evitar repeticions en el tokenId.
     /*using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;*/
-    uint256 tokenId = 0;
+    uint256 tokenId = 1;
 
     bytes32 public constant ERC998_MAGIC_VALUE = 0xcd740db500000000000000000000000000000000000000000000000000000000;
     //from zepellin ERC721Receiver.sol
@@ -153,6 +153,8 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
             tokenOwnerToTokenCount[_from]--;
             tokenIdToTokenOwner[_tokenId] = _to;
             tokenOwnerToTokenCount[_to]++;
+            lotsFabricant[_to] = lotsFabricant[_from];
+            delete lotsFabricant[_from];
         }
         emit Transfer(_from, _to, _tokenId);
     }
@@ -310,11 +312,11 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
         return childContracts[_tokenId];
     }
 
-    /*function ownerOf(uint256 _tokenId) public view override returns (address tokenOwner) {
+    function ownerOf(uint256 _tokenId) public view override returns (address tokenOwner) {
         tokenOwner = tokenIdToTokenOwner[_tokenId];
         require(tokenOwner != address(0));
         return tokenOwner;
-    }*/
+    }
     
     function getOwner() public view returns (address) {           
         return owner;

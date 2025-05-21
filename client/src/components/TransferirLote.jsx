@@ -43,38 +43,6 @@ function TransferirLote({ cuenta }) {
         }
     };
 
-    /*const transferirVacuna = async () => {
-        if (!vacunaContract || !lotContract || !selectedVacunaId || !selectedLotId) {
-            setMessage("Por favor, selecciona una vacuna y un lote.");
-            return;
-        }
-
-        try {
-            setMessage("Transfiriendo vacuna...");
-            console.log("cuenta ", cuenta);
-            console.log("lotContractAddress ", lotContractAddress);
-            console.log("selectedVacunaId ", selectedVacunaId);
-            console.log("selectedLotId ", ethers.encodeBytes32String(selectedLotId));
-            console.log("selectedLotId 32 ", padLeft32Zero(selectedLotId, 16)); 
-
-            const tx = await vacunaContract["safeTransferFrom(address,address,uint256,bytes)"](
-                cuenta,
-                lotContractAddress,
-                selectedVacunaId,
-                padLeft32Zero(selectedLotId, 16)
-            );
-            await tx.wait();
-            setMessage(`Vacuna ${selectedVacunaId} transferida al Lote ${selectedLotId} con éxito!`);
-
-            // Actualizar las listas después de la transferencia
-            await fetchVacunas(vacunaContract, cuenta);
-            await fetchLotes(lotContract, cuenta);
-        } catch (error) {
-            console.error("Error al transferir la vacuna:", error);
-            setMessage(`Error: ${error.message}`);
-        }
-    };*/
-
     const transferirLot = async () => {
         if (!lotContract || !selectedLotId) {
             setMessage("Por favor, selecciona un lote.");
