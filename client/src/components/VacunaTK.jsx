@@ -120,7 +120,9 @@ function VacunaTKForm({ cuenta }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {vacunas.map((vacuna, index) => (
+                    {vacunas
+                    .filter(vacuna => !vacuna.asignadaLot)
+                    .map((vacuna, index) => (
                         <tr key={index}>
                             <td>{vacuna.idVacuna}</td>
                             <td>{vacuna.termolabil ? 'Sí' : 'No'}</td>

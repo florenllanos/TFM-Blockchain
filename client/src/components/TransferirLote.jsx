@@ -54,7 +54,7 @@ function TransferirLote({ cuenta }) {
 
             const tx = await lotContract.transferFrom(cuenta,direccionContrato,selectedLotId);
             await tx.wait();
-            setMessage(`Lot ${selectedLotId} transferido con éxito!`);
+            setMessage(`Lot ${selectedLotId} transferit amb èxit a ${direccionContrato} !`);
             console.log("Dirección origen ", cuenta);
             console.log("Dirección destino ", direccionContrato);
             console.log("Lote transferido ", selectedLotId);
