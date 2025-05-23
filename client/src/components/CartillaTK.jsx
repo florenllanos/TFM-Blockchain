@@ -5,8 +5,7 @@ import CartillaTK from '../contratos/CartillaTK.json'; // Importa el ABI.
 const adresaContracte = process.env.REACT_APP_CARTILLATK; // Adreça contracte.
 const abiContracte = CartillaTK.abi;
 
-function CartillaTKForm({ cuenta }) {
-    const [idCartilla, setIdCartilla] = useState('');
+function CartillaTKForm({ cuenta }) {    
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
     const [direccionContrato, setDireccionContrato] = useState('');
@@ -20,9 +19,7 @@ function CartillaTKForm({ cuenta }) {
                 const signer = await provider.getSigner();
                 const newContract = new ethers.Contract(adresaContracte, abiContracte, signer);
                 setContract(newContract);
-                
-                // Carregar les vacunes existents al carregar el component
-                //await fetchVacunes(newContract, cuenta);
+
             } else {
                 console.log("Contracte null");
                 setContract(null);
@@ -31,17 +28,6 @@ function CartillaTKForm({ cuenta }) {
 
         initializeContract();
     }, [cuenta]);
-
-    /*const fetchVacunes = async (contract, cuenta) => {
-        try {
-            if (contract && cuenta) {
-                const vacunesEmpresa = await contract.getVacunesEmpresa(cuenta);
-                setVacunas(vacunesEmpresa);
-            }
-        } catch (error) {
-            console.error("Error obtenint vacunes:", error);
-        }
-    };*/
 
     const mintToken = async (e) => {
         console.log("Hemos hecho submit del formulario");
@@ -53,16 +39,14 @@ function CartillaTKForm({ cuenta }) {
         }
 
         try {
-            setMessage("Minting token...");            
+            setMessage("Generant cartilla");            
             const tx = await contract.mint(direccionContrato, cipHash);
-            await tx.wait();            
-            setMessage("Token minted successfully!! ");
-            // Limpiar el formulario
+            const res = await tx.wait();
+
+            setMessage(`Cartilla creada i assignada a pacient: ${cipHash}`);
+            // Neteja formulari.
             setDireccionContrato('');
             setCipHash('');
-
-            // Actualizamos el listado de vacunas justo después de crear una.
-            //await fetchVacunes(contract, cuenta);
 
         } catch (error) {
             console.error('Error minting token:', error);
@@ -83,7 +67,7 @@ function CartillaTKForm({ cuenta }) {
             <h2>Creat cartilla a pacient</h2>
             <form onSubmit={mintToken}>
                 <div>
-                    <label htmlFor="direccionContrato">Dirección del Contrato Destino:</label>
+                    <label htmlFor="direccionContrato">Adreça contracte destí:</label>
                         <input
                         type="text"
                         id="direccionContrato"
