@@ -243,7 +243,8 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
 
     function receiveChild(address _from, uint256 _tokenId, address _childContract, uint256 _childTokenId) private {
         // Veiem que tingui permís per administrar
-        require(cartilles[_tokenId].permisAdministrar == true, "No te permis per accedir a la cartilla");
+        //require(cartilles[_tokenId].permisAdministrar == true, "No te permis per accedir a la cartilla");
+        require(cartillaPacient[ownerOf(_childTokenId)].permisAdministrar == true, "No te permis per accedir a la cartilla");
         require(tokenIdToTokenOwner[_tokenId] != address(0), "La cartilla no existeix.");
         require(childTokenIndex[_tokenId][_childContract][_childTokenId] == 0, "Fill ja existent per el pare indicat.");        
         uint256 childTokensLength = childTokens[_tokenId][_childContract].length;
