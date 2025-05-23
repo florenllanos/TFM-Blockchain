@@ -48,8 +48,9 @@ function TransferirVacunaLote({ cuenta }) {
             if (contract && account) {
                 const vacunasEmpresa = await contract.getVacunesEmpresa(account);
                 console.log("Vacunas empresa: ", vacunasEmpresa.idToken);
+                console.log("vacuna sin asignar a lot ", vacunasEmpresa.filter(vacuna => !vacuna.asignadaLot));
                 setVacunas(vacunasEmpresa);
-            }
+            }            
         } catch (error) {
             console.error("Error obtenint vacunes:", error);
         }
@@ -67,6 +68,9 @@ function TransferirVacunaLote({ cuenta }) {
         }
     };
 
+    const handleLotSelectionChange = (event) => {
+        setSelectedLotId(event.target.value);
+    };
 
     const transferirVacuna = async () => {
         /*if (!vacunaContract || !lotContract || !selectedVacunaId || !selectedLotId) {
@@ -94,41 +98,66 @@ function TransferirVacunaLote({ cuenta }) {
         }
     };
 
-    /* "Genera" a 32 posicions (0 a l'esquerra) el número de lot.
-    */
-    /*const padLeft32Zero = (valor, longitud) => {
-        let numHex = ethers.toBeHex(valor);
-        const longDesitjada = longitud * 2;
-        const paddingLong = longDesitjada - (numHex.length - 2);
-        const padding = "0".repeat(Math.max(0, paddingLong));
-        const paddedHexString = "0x" + padding + numHex.slice(2);
-
-        return paddedHexString;
-    }*/
-
     return (
         <div>
             <h2>Transferir Vacuna a Lote</h2>
-
-            <div>
-                <label>Seleccionar Vacuna:</label>
-                <select value={selectedVacunaId} onChange={(e) => setSelectedVacunaId(e.target.value)}>
-                    <option value="">Selecciona una vacuna</option>
-                    {vacunas.map((vacuna, index) => (                        
-                        <option key={index} value={vacuna.idToken}>
-                            {vacuna.idVacuna}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div>
+            {/*<div>
                 <label>Seleccionar Lote:</label>
                 <select value={selectedLotId} onChange={(e) => setSelectedLotId(e.target.value)}>
                     <option value="">Selecciona un lote</option>
                     {lotes.map((lote, index) => (
                         <option key={index} value={lote.idToken}>
                             {lote.idLot}
+                        </option>
+                    ))}
+                </select>
+            </div>*/}
+
+            <div style={{ marginTop: '20px' }}>
+                <h4>Seleccionar Lote de Destino:</h4>
+                {lotes.length > 0 ? (
+                    <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ padding: '8px', textAlign: 'left' }}>Seleccionar</th>
+                                <th style={{ padding: '8px', textAlign: 'left' }}>ID Lote (Nombre/Etiqueta)</th>
+                                <th style={{ padding: '8px', textAlign: 'left' }}>ID Token del Lote</th>
+                                {/* Puedes añadir más columnas con detalles del lote si es necesario */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lotes.map((lote) => (
+                                // Asumiendo que cada 'lote' tiene 'idToken' como valor único y 'idLot' como display
+                                <tr key={lote.idToken ? lote.idToken.toString() : lote.idLot.toString()}>
+                                    <td style={{ padding: '8px' }}>
+                                        <input
+                                            type="radio"
+                                            name="selectedLotRadio" // Nombre común para agrupar los radio buttons
+                                            value={lote.idToken ? lote.idToken.toString() : ''}
+                                            checked={selectedLotId === (lote.idToken ? lote.idToken.toString() : '')}
+                                            onChange={handleLotSelectionChange}
+                                        />
+                                    </td>
+                                    <td style={{ padding: '8px' }}>{lote.idLot ? lote.idLot.toString() : 'N/A'}</td>
+                                    <td style={{ padding: '8px' }}>{lote.idToken ? lote.idToken.toString() : 'N/A'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No hay lotes disponibles o se están cargando. Asegúrate que tu cuenta tiene lotes asociados.</p>
+                )}
+            </div>
+
+            <div>
+                <label>Seleccionar Vacuna:</label>
+                <select value={selectedVacunaId} onChange={(e) => setSelectedVacunaId(e.target.value)}>
+                    <option value="">Selecciona una vacuna</option>
+                    {vacunas
+                        .filter(vacuna => !vacuna.asignadaLot)
+                        .map((vacuna, index) => (                        
+                        <option key={index} value={vacuna.idToken}>
+                            {vacuna.idVacuna}
                         </option>
                     ))}
                 </select>

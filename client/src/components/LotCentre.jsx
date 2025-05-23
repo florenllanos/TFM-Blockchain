@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json';
 import LotTK from '../contratos/LotTK.json';
 import CartillaTK from '../contratos/CartillaTK.json';
+import { padLeft32Zero } from '../utils/Utils.js';
 
 const vacunaContractAddress = process.env.REACT_APP_VACUNATK; // Contracte de VacunaTK
 const vacunaContractABI = VacunaTK.abi;
@@ -23,6 +24,7 @@ function LotCentre({ cuenta }) {
     const [selectedLotId, setSelectedLotId] = useState('');
     const [lots, setLots] = useState([]);
     const [selectedVacunaToAdminister, setSelectedVacunaToAdminister] = useState('');
+    const [idTokenPacient, setIdTokenPacient] = useState('');
     const [message, setMessage] = useState('');
      
     useEffect(() => {
@@ -78,6 +80,10 @@ function LotCentre({ cuenta }) {
         setSelectedVacunaToAdminister(event.target.value);
     };
 
+    const handleIdTokenPacientChange = (event) => {
+        setIdTokenPacient(event.target.value);
+    };
+
     const administerVacuna = async () => {
         if (!selectedVacunaToAdminister) {
             setMessage("Por favor, selecciona una vacuna para administrar.");
@@ -92,12 +98,13 @@ function LotCentre({ cuenta }) {
         try { //TODO: acabar transferencia de vacuna.
             setMessage("Administrando vacuna...");
             // idTokenPadre, adresaDest, contracteFill, idTokenFill, _dataIdTokenDesti
+            console.log("Id token paciente ", padLeft32Zero(idTokenPacient, 16));
             const tx = await lotContract["safeTransferChild(uint256,address,address,uint256,bytes)"](
                 selectedLotId, 
                 cartillaContractAddress, 
                 vacunaContractAddress, 
                 selectedVacunaToAdminister,
-                "0x00000000000000000000000000000001"
+                padLeft32Zero(idTokenPacient, 16)
             );
             await tx.wait();
             setMessage(`Vacuna ${selectedVacunaToAdminister} administrada exitosamente del lote ${selectedLotId}.`);
@@ -166,6 +173,20 @@ function LotCentre({ cuenta }) {
                 </table>
             ) : (
                 <p>No hi ha vacunes disponibles al lot</p>
+            )}
+
+            {vacunas.length > 0 && ( // només si hi ha vacunes
+                <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                    <label htmlFor="idTokenPacientInput">ID Token Paciente (para _dataIdTokenDesti):</label>
+                    <input
+                        type="text"
+                        id="idTokenPacientInput"
+                        value={idTokenPacient}
+                        onChange={handleIdTokenPacientChange}
+                        placeholder="Ej: 1 o 0x..."
+                        style={{ marginLeft: '5px' }}
+                    />
+                </div>
             )}
 
             {vacunas.length > 0 && (

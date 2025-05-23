@@ -21,12 +21,10 @@ contract VacunaTK is ERC721 {
     // Mapping de vacunes a partir del id del Token ERC721.
     mapping(uint256 => Vacuna) private vacunas;
 
-    // Mapping de vacunes creades, Vacuna[], per empresa fabricant, address.
-    mapping(address => Vacuna[])  private vacunesFabricant;
+    // Mapping de vacunes creades, Vacuna[], per empresa fabricant, address.    
+    mapping(address => uint256[])  private vacunesFabricant;
 
-    // Contador automàtic per evitar repeticions en el tokenId.
-    //using Counters for Counters.Counter;
-    //Counters.Counter private _tokenIdCounter;
+    // Contador tokenId.    
     uint256 private tokenId = 1;
 
     address public owner;
@@ -43,13 +41,13 @@ contract VacunaTK is ERC721 {
             asignadaLot: false,
             administrada: false
         });
-        vacunesFabricant[to].push(newVacuna);
+        vacunesFabricant[to].push(tokenId);
+        vacunas[newVacuna.idToken]= newVacuna;
         safeMint(to, newVacuna);
         tokenId++;
     }
    
-    function safeMint(address to, Vacuna memory _newVacuna) public {
-        vacunas[_newVacuna.idToken]= _newVacuna;
+    function safeMint(address to, Vacuna memory _newVacuna) public {        
         _safeMint(to, _newVacuna.idToken);               
     }
 
@@ -64,7 +62,12 @@ contract VacunaTK is ERC721 {
 
     // Retorna les vacunes creades per empresa.
     function getVacunesEmpresa(address _creadorVacuna) public view returns (Vacuna[] memory) {
-        return vacunesFabricant[_creadorVacuna];
+        uint256[] storage id = vacunesFabricant[_creadorVacuna];
+        Vacuna[] memory resVac = new Vacuna[](id.length);
+        for (uint i = 0; i < id.length; i++) {
+            resVac[i] = vacunas[id[i]];
+        }
+        return resVac;
     }
 
     // Sobreescrivim safeTransferFrom per marcar les vacunes asignades a lot.

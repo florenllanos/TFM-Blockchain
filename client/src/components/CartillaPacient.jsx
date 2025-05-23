@@ -16,14 +16,16 @@ function CartillaPacient({ cuenta }) {
 
     useEffect(() => {
         const initializeContract = async () => {
+            console.log("Esto es lo primero que hago");
             if (window.ethereum && cuenta) {
+                console.log("Esto es lo primero que hago cuando tengo la sign y la cuenta");
                 const provider = new ethers.BrowserProvider(window.ethereum);
                 const signer = await provider.getSigner();
 
                 const cartillaTKContract = new ethers.Contract(cartillaContractAddress, cartillaContractABI, signer);
                 setCartillaContract(cartillaTKContract);
 
-                await fetchVacunesPacient(cartillaContract, cuenta);
+                await fetchVacunesPacient(cartillaTKContract, cuenta);
 
             } else {
                 setCartillaContract(null);
@@ -32,18 +34,6 @@ function CartillaPacient({ cuenta }) {
 
         initializeContract();
     }, [cuenta]);
-
-    /*const fetchLotes = async (contract, account) => {
-        try {
-            if (contract && account) {
-                const lotesEmpresa = await contract.getLotsEmpresa(account);
-                console.log("Vacunas empresa: ", lotesEmpresa.idLot);
-                setLotes(lotesEmpresa);
-            }
-        } catch (error) {
-            console.error("Error obtenint lots:", error);
-        }
-    };*/
 
     const fetchVacunesPacient = async (contract, account) => {
         try {
@@ -68,14 +58,20 @@ function CartillaPacient({ cuenta }) {
         }*/
         console.log("Llego a permisCartilla");
         const checked = event.target.checked;
+        console.log("Miro si es checked");
         try {
             //setMessage("Donant permisos...");
             let tx;
             let missatge;
+            console.log("Dentro del try del checked");
             if(checked) {
+                console.log("Esta marcado el check ", cartillaContract);
+                console.log("Esta marcado el check ", cartillaPacient.idToken);
                 tx = await cartillaContract.setPermisAdministrar(cartillaPacient.idToken);
                 missatge = "Permisos concedits";                
             } else {
+                console.log("No esta marcado el check ", cartillaContract);
+                console.log("No esta marcado el check ", cartillaPacient.idToken);
                 tx = await cartillaContract.setNoPermisAdministrar(cartillaPacient.idToken);
                 missatge = "Permisos no concedits";
             }
@@ -93,11 +89,6 @@ function CartillaPacient({ cuenta }) {
     const cambiaContrato = (event) => {
         setDireccionContrato(event.target.value);
     };
-
-    /*const cambioPermiso = (event) => {
-        const nuevoValor = event.target.checked;
-        setPermisoBool(nuevoValor);
-    };*/
 
     return (
         <div>
@@ -120,8 +111,7 @@ function CartillaPacient({ cuenta }) {
                     onChange={permisCartilla}
                     />
                 </label>
-            </div>
-            {/*<button onClick={permisCartilla}>Permís registre vacuna</button>*/}
+            </div>            
 
             {message && <p>{message}</p>}
 
