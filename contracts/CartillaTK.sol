@@ -31,16 +31,11 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
         VacunaTK.Vacuna vacuna;
     }
 
-    // Mapping de les dades de la vacuna per una cartilla.
-    //mapping(uint256 => DadesVacunaCartilla) private dadesVacunesCartilla;
-
     // Quantitat de vacunes que té per cartilla (idParentToken => num vacunes).
     mapping(uint256 => uint256) private numVacunesCartilla;
 
     // Contador automàtic per evitar repeticions en el tokenId.
-    /*using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;*/
-    uint256 tokenId = 0;
+    uint256 tokenId = 1;
 
     bytes32 public constant ERC998_MAGIC_VALUE = 0xcd740db500000000000000000000000000000000000000000000000000000000;
     //from zepellin ERC721Receiver.sol
