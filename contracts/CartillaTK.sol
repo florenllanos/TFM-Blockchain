@@ -273,9 +273,9 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
         return tokenOwnerToTokenCount[_from];
     }
 
-    function getDadesCartilla(uint256 _idToken) public view returns (Cartilla memory) {
+    /*function getDadesCartilla(uint256 _idToken) public view returns (Cartilla memory) {
         return cartilles[_idToken];
-    }
+    }*/
 
     // Retorna els les adreces dels contractes a partir de un tokenid pare.
     // mapping(uint256 => address[]) private childContracts;
@@ -305,7 +305,7 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
         return _dadesVacunesCartilla;
     }
 
-    function setPermisAdministrar(uint256 _tokenId) public {
+    /*function setPermisAdministrar(uint256 _tokenId) public {
         require(cartilles[_tokenId].permisAdministrar == false);  
         cartilles[_tokenId].permisAdministrar = true;
     }
@@ -313,6 +313,10 @@ contract CartillaTK is ERC721, IERC998ERC721TopDown {
     function setNoPermisAdministrar(uint256 _tokenId) public {
         require(cartilles[_tokenId].permisAdministrar == true);  
         cartilles[_tokenId].permisAdministrar = false;
+    }*/
+
+    function setPermisAdministrar(address _patientAddress, bool _permis) public {
+        cartillaPacient[_patientAddress].permisAdministrar = _permis;
     }
 
     function getCartillaPacient(address _patientAddress) public view returns (Cartilla memory) {
