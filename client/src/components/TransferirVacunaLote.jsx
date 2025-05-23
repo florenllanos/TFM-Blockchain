@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json';
 import LotTK from '../contratos/LotTK.json';
+import { padLeft32Zero } from '../utils/Utils.js';
 
 const vacunaContractAddress = process.env.REACT_APP_VACUNATK; // Contracte de VacunaTK
 const vacunaContractABI = VacunaTK.abi;
@@ -95,7 +96,7 @@ function TransferirVacunaLote({ cuenta }) {
 
     /* "Genera" a 32 posicions (0 a l'esquerra) el número de lot.
     */
-    const padLeft32Zero = (valor, longitud) => {
+    /*const padLeft32Zero = (valor, longitud) => {
         let numHex = ethers.toBeHex(valor);
         const longDesitjada = longitud * 2;
         const paddingLong = longDesitjada - (numHex.length - 2);
@@ -103,7 +104,7 @@ function TransferirVacunaLote({ cuenta }) {
         const paddedHexString = "0x" + padding + numHex.slice(2);
 
         return paddedHexString;
-    }
+    }*/
 
     return (
         <div>
