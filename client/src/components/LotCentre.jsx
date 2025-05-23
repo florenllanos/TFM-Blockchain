@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json';
 import LotTK from '../contratos/LotTK.json';
+import CartillaTK from '../contratos/CartillaTK.json';
 
 const vacunaContractAddress = process.env.REACT_APP_VACUNATK; // Contracte de VacunaTK
 const vacunaContractABI = VacunaTK.abi;
 
 const lotContractAddress = process.env.REACT_APP_LOTTK; // Contracte de LotTK
 const lotContractABI = LotTK.abi;
+
+const cartillaContractAddress = process.env.REACT_APP_CARTILLATK // Contracte de CartillaTK.
+const cartillaContractABI = CartillaTK.abi;
 
 function LotCentre({ cuenta }) {
     console.log("Lot centre");
@@ -18,6 +22,7 @@ function LotCentre({ cuenta }) {
     const [selectedVacunaId, setSelectedVacunaId] = useState('');
     const [selectedLotId, setSelectedLotId] = useState('');
     const [lots, setLots] = useState([]);
+    const [selectedVacunaToAdminister, setSelectedVacunaToAdminister] = useState('');
     const [message, setMessage] = useState('');
      
     useEffect(() => {
@@ -32,10 +37,6 @@ function LotCentre({ cuenta }) {
                 const lotTKContract = new ethers.Contract(lotContractAddress, lotContractABI, signer);
                 setLotContract(lotTKContract);
 
-                //await fetchVacunas(vacunaTKContract, cuenta);
-                //await fetchLotes(lotTKContract, cuenta);
-                //await fetchVacunesAprovades(lotTKContract, vacunaTKContract, cuenta);
-                //console.log("Després vacunes aprovades");
                 await fetchLotes(lotTKContract, cuenta);
 
             } else {
@@ -73,6 +74,42 @@ function LotCentre({ cuenta }) {
         }
     };
 
+    const handleVacunaSelection = (event) => {
+        setSelectedVacunaToAdminister(event.target.value);
+    };
+
+    const administerVacuna = async () => {
+        if (!selectedVacunaToAdminister) {
+            setMessage("Por favor, selecciona una vacuna para administrar.");
+            return;
+        }
+
+        if (!lotContract) {
+            setMessage("El contrato de lote no está inicializado.");
+            return;
+        }
+
+        try { //TODO: acabar transferencia de vacuna.
+            setMessage("Administrando vacuna...");
+            // idTokenPadre, adresaDest, contracteFill, idTokenFill, _dataIdTokenDesti
+            const tx = await lotContract["safeTransferChild(uint256,address,address,uint256,bytes)"](
+                selectedLotId, 
+                cartillaContractAddress, 
+                vacunaContractAddress, 
+                selectedVacunaToAdminister,
+                "0x00000000000000000000000000000001"
+            );
+            await tx.wait();
+            setMessage(`Vacuna ${selectedVacunaToAdminister} administrada exitosamente del lote ${selectedLotId}.`);
+            // Actualizar la lista de vacunas después de la administración
+            await fetchVacunesLote(selectedLotId);
+            setSelectedVacunaToAdminister(''); // Limpiar la selección
+        } catch (error) {
+            console.error("Error al administrar la vacuna:", error);
+            setMessage(`Error al administrar la vacuna: ${error.message}`);
+        }
+    };
+
     return (
         <div>
            {/* Tabla de Lotes */}
@@ -94,6 +131,7 @@ function LotCentre({ cuenta }) {
                 <table>
                     <thead>
                         <tr>
+                            <th>Sel. vacuna</th>
                             <th>ID token Vacuna</th>
                             <th>ID Vacuna</th>
                             <th>Termolábil</th>
@@ -106,6 +144,15 @@ function LotCentre({ cuenta }) {
                     <tbody>
                         {vacunas.map((vacuna, index) => (
                             <tr key={index}>
+                                <td>
+                                    <input
+                                        type="radio"
+                                        name="administerVacuna"
+                                        value={vacuna.idVacunaToken}
+                                        checked={selectedVacunaToAdminister === vacuna.idVacunaToken.toString()}
+                                        onChange={handleVacunaSelection}
+                                    />
+                                </td>
                                 <td>{vacuna.idVacunaToken}</td>
                                 <td>{vacuna.vacuna.idVacuna}</td>
                                 <td>{vacuna.vacuna.termolabil ? "Sí" : "No"}</td>
@@ -119,6 +166,12 @@ function LotCentre({ cuenta }) {
                 </table>
             ) : (
                 <p>No hi ha vacunes disponibles al lot</p>
+            )}
+
+            {vacunas.length > 0 && (
+                <button onClick={administerVacuna} disabled={!selectedVacunaToAdminister}>
+                    Administrar Vacuna Seleccionada
+                </button>
             )}
         </div>
     );

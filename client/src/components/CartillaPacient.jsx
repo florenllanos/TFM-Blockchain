@@ -66,7 +66,7 @@ function CartillaPacient({ cuenta }) {
             setMessage("Seleccioni un compte");
             return;
         }*/
-
+        console.log("Llego a permisCartilla");
         const checked = event.target.checked;
         try {
             //setMessage("Donant permisos...");
