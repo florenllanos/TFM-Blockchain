@@ -42,7 +42,7 @@ function CartillaPacient({ cuenta }) {
                 console.log("FetchVacunesPacient", account);
                 const cartilla = await contract.getCartillaPacient(account);                
                 setCartillaPacient(cartilla);
-                console.log("Cartilla del pacient (idToken): ", cartillaPacient.idToken);
+                console.log("Cartilla del pacient (idToken): ", cartilla.idToken);
 
                 const vacunesPacient = await contract.getDadesVacunesCartilla(cartillaPacient.idToken);
                 setVacunesPacient(vacunesPacient);  
