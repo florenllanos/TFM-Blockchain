@@ -149,7 +149,9 @@ function LotCentre({ cuenta }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {vacunas.map((vacuna, index) => (
+                        {vacunas
+                        .filter(vacuna => vacuna.idVacunaToken != 0)
+                        .map((vacuna, index) => (
                             <tr key={index}>
                                 <td>
                                     <input

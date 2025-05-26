@@ -252,37 +252,34 @@ contract LotTK is ERC721, IERC998ERC721TopDown {
         require(false == true);
     }
 
-    function removeChild(uint256 _tokenId, address _childContract, uint256 _childTokenId) private {        
-        uint256 tokenIndex = childTokenIndex[_tokenId][_childContract][_childTokenId];        
-        require(tokenIndex != 0, "Child token not owned by token.");            
-        // remove child token        
-        uint256 lastTokenIndex = childTokens[_tokenId][_childContract].length - 1;        
-        uint256 lastToken = childTokens[_tokenId][_childContract][lastTokenIndex];      
-        if (_childTokenId == lastToken) {            
-            childTokens[_tokenId][_childContract][tokenIndex - 1] = lastToken;            
-            childTokenIndex[_tokenId][_childContract][lastToken] = tokenIndex;            
-        }        
-        uint totalTokens = childTokens[_tokenId][_childContract].length;        
-        if (totalTokens - 1 == 0) {           
-            delete childTokens[_tokenId][_childContract];            
-        } else {           
-            delete childTokens[_tokenId][_childContract][totalTokens - 1];            
-        }        
-        delete childTokenIndex[_tokenId][_childContract][_childTokenId];        
+    function removeChild(uint256 _tokenId, address _childContract, uint256 _childTokenId) private {
+        uint256 tokenIndex = childTokenIndex[_tokenId][_childContract][_childTokenId];
+        require(tokenIndex != 0, "Child token not owned by token.");
+        uint256 lastTokenIndex = childTokens[_tokenId][_childContract].length - 1;
+        uint256 lastToken = childTokens[_tokenId][_childContract][lastTokenIndex];
+        if (_childTokenId != lastToken) {
+            childTokens[_tokenId][_childContract][tokenIndex - 1] = lastToken;
+            childTokenIndex[_tokenId][_childContract][lastToken] = tokenIndex;
+        }
+        childTokens[_tokenId][_childContract].pop();
+        delete childTokenIndex[_tokenId][_childContract][_childTokenId];
         delete childTokenOwner[_childContract][_childTokenId];
-        // remove contract
-        if (lastTokenIndex == 0) {           
-            uint256 lastContractIndex = childContracts[_tokenId].length - 1;          
-            address lastContract = childContracts[_tokenId][lastContractIndex];                      
-            if (_childContract != lastContract) {              
-                uint256 contractIndex = childContractIndex[_tokenId][_childContract];                
-                childContracts[_tokenId][contractIndex] = lastContract;                
-                childContractIndex[_tokenId][lastContract] = contractIndex;                
-            }            
-            delete childContracts[_tokenId];            
-            delete childContractIndex[_tokenId][_childContract];        
+
+        // Si no hi ha tokens, elimina la entrada.
+        if (childTokens[_tokenId][_childContract].length == 0) {
+            delete childTokens[_tokenId][_childContract];
+            uint256 lastContractIndex = childContracts[_tokenId].length - 1;
+            address lastContract = childContracts[_tokenId][lastContractIndex];
+            if (_childContract != lastContract) {
+                uint256 contractIndex = childContractIndex[_tokenId][_childContract];
+                childContracts[_tokenId][contractIndex] = lastContract;
+                childContractIndex[_tokenId][lastContract] = contractIndex;
+            }
+            childContracts[_tokenId].pop();
+            delete childContractIndex[_tokenId][_childContract];
         }
     }
+
 
     function safeTransferChild(uint256 _fromTokenId, address _to, address _childContract, uint256 _childTokenId) external override {
         require(false == true);
