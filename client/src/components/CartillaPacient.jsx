@@ -44,7 +44,7 @@ function CartillaPacient({ cuenta }) {
                 setCartillaPacient(cartilla);
                 console.log("Cartilla del pacient (idToken): ", cartilla.idToken);
 
-                const vacunesPacient = await contract.getDadesVacunesCartilla(cartillaPacient.idToken);
+                const vacunesPacient = await contract.getDadesVacunesCartilla(cartilla.idToken);
                 setVacunesPacient(vacunesPacient);  
             }
         } catch (error) {
