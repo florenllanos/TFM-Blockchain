@@ -5,6 +5,8 @@ import LotTK from '../contratos/LotTK.json';
 import CartillaTK from '../contratos/CartillaTK.json';
 import { padLeft32Zero } from '../utils/Utils.js';
 
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+
 const vacunaContractAddress = process.env.REACT_APP_VACUNATK; // Contracte de VacunaTK
 const vacunaContractABI = VacunaTK.abi;
 
@@ -117,9 +119,9 @@ function LotCentre({ cuenta }) {
         }
     };
 
-    return (
+    /*return (
         <div>
-           {/* Tabla de Lotes */}
+           
             <h2>Lots</h2>
             <div>
                 <label>Seleccionar Lote:</label>
@@ -132,7 +134,7 @@ function LotCentre({ cuenta }) {
                     ))}
                 </select>
             </div>
-            {/* Tabla de Vacunas */}
+            
             <h3>Vacunas</h3>
             {vacunas.length > 0 ? (
                 <table>
@@ -197,6 +199,102 @@ function LotCentre({ cuenta }) {
                 </button>
             )}
         </div>
+    );*/
+
+    return (
+        <Container className="mt-4">
+            <Row>
+                <Col md={{ size: 10, offset: 1 }}>
+                    <h2><i className="bi bi-archive me-2"></i>Gestió de lots i vacunes</h2>
+                    <Form className="p-4 border rounded shadow-sm mb-4">
+                        <FormGroup>
+                            <Label for="lotSelect">Seleccionar lot:</Label>
+                            <Input
+                                type="select"
+                                id="lotSelect"
+                                value={selectedLotId}
+                                onChange={(e) => fetchVacunesLote(e.target.value)}
+                            >
+                                <option value="">Selecciona un lot</option>
+                                {lotes.map((lote, index) => (
+                                    <option key={index} value={lote.idToken}>
+                                        {lote.idLot}
+                                    </option>
+                                ))}
+                            </Input>
+                        </FormGroup>
+                    </Form>
+
+                    <h3><i className="bi bi-capsule me-2"></i>Vacunes</h3>
+                    {vacunas.length > 0 ? (
+                        <Table hover responsive striped bordered className="shadow-sm">
+                            <thead className="table-dark">
+                                <tr>
+                                    <th>Sel.</th>
+                                    <th>ID token</th>
+                                    <th>ID Vacuna</th>
+                                    <th>Termolàbil</th>
+                                    <th>Temp. Conservació</th>
+                                    <th>Caducitat</th>
+                                    <th>Assignada a Lote</th>
+                                    <th>Administrada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {vacunas
+                                    .filter(vacuna => vacuna.idVacunaToken !== 0)
+                                    .map((vacuna, index) => (
+                                        <tr key={index}>
+                                            <td>
+                                                <Input
+                                                    type="radio"
+                                                    name="administerVacuna"
+                                                    value={vacuna.idVacunaToken}
+                                                    checked={selectedVacunaToAdminister === vacuna.idVacunaToken.toString()}
+                                                    onChange={handleVacunaSelection}
+                                                />
+                                            </td>
+                                            <td>{vacuna.idVacunaToken}</td>
+                                            <td>{vacuna.vacuna.idVacuna}</td>
+                                            <td>{vacuna.vacuna.termolabil ? "Sí" : "No"}</td>
+                                            <td>{vacuna.vacuna.tempConservacio}</td>
+                                            <td>{vacuna.vacuna.dataCaducitat}</td>
+                                            <td>{vacuna.vacuna.asignadaLot ? "Sí" : "No"}</td>
+                                            <td>{vacuna.vacuna.administrada ? "Sí" : "No"}</td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </Table>
+                    ) : (
+                        <p className="text-muted">No hi ha vacunes disponibles al lot seleccionat.</p>
+                    )}
+
+                    {vacunas.length > 0 && (
+                        <Form className="p-4 border rounded shadow-sm mt-4">
+                            <FormGroup>
+                                <Label for="idTokenPacientInput">ID Token Pacient (per a `_dataIdTokenDesti`):</Label>
+                                <Input
+                                    type="text"
+                                    id="idTokenPacientInput"
+                                    value={idTokenPacient}
+                                    onChange={handleIdTokenPacientChange}
+                                    placeholder="Ej: 1 o 0x..."
+                                />
+                            </FormGroup>
+
+                            <Button
+                                color="primary"
+                                onClick={administerVacuna}
+                                disabled={!selectedVacunaToAdminister}
+                            >
+                                Administrar Vacuna Seleccionada
+                            </Button>
+                        </Form>
+                    )}
+                </Col>
+            </Row>
+        </Container>
+
     );
 }
 

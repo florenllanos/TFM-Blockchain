@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import LotTK from '../contratos/LotTK.json'; // Importa el ABI.
 
-//const adresaContracte = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"; // Adreça contracte.
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+
 const adresaContracte = process.env.REACT_APP_LOTTK;
 const abiContracte = LotTK.abi;
 
@@ -13,8 +14,7 @@ function LotTKForm({ cuenta }) {
     const [dataFabricacio, setDataFabricacio] = useState('');
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
-    const [lots, setLots] = useState([]); // Lots, para mostrar los que se van creando.
-    //const [lotTancat, setLotTancat] = useState(false);
+    const [lots, setLots] = useState([]); // Lots, per mostrar els que es van creant.
 
     useEffect(() => {
         const initializeContract = async () => {
@@ -40,8 +40,7 @@ function LotTKForm({ cuenta }) {
         try {
             if (contract && cuenta) {
                 const lotsEmpresa = await contract.getLotsEmpresa(cuenta);                
-                setLots(lotsEmpresa);
-                console.log("Lot empresa ", lots.idLot);
+                setLots(lotsEmpresa);                
             }
         } catch (error) {
             console.error("Error obtenint lots:", error);
@@ -50,79 +49,111 @@ function LotTKForm({ cuenta }) {
 
     const mintToken = async (e) => {
         e.preventDefault();
-        if (!cuenta) {
-            console.log("Cuenta ", cuenta);
-            setMessage("Por favor, conecta tu wallet.");
+        if (!cuenta) {            
+            setMessage("Per favor, connecta el teu wallet.");
             return;
         }
 
         try {
-            setMessage("Minting token...");            
+            setMessage("Creant lot");            
             const tx = await contract.mint(cuenta, idLot, fabricant, nomLot, dataFabricacio);
             await tx.wait();
-            setMessage("Token minted successfully!");
-            // Limpiar el formulario
+            setMessage("Lot creat amb èxit!");
+            // Neteja formulari
             setIdLot('');
             setFabricant('');
             setNomLot('');
             setDataFabricacio('');
-
-            // Actualizamos el listado de lots justo después de crear uno.
+            
             await fetchLotsEmpresa(contract, cuenta);
 
         } catch (error) {
-            console.error('Error minting token:', error);
+            console.error('Error creant el lot:', error);
             setMessage(`Error: ${error.message}`);
         }
     };
 
     return (
-        <div>
-            <h2>Crear token de lot</h2>
-            <form onSubmit={mintToken}>
-                <div>
-                    <label>ID Lot:</label>
-                    <input type="text" value={idLot} onChange={(e) => setIdLot(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Fabricant:</label>
-                    <input type="text" value={fabricant} onChange={(e) => setFabricant(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Nom lot:</label>
-                    <input type="text" value={nomLot} onChange={(e) => setNomLot(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Fecha fabricació:</label>
-                    <input type="date" value={dataFabricacio} onChange={(e) => setDataFabricacio(e.target.value)} required />
-                </div>
-                <button type="submit">Mint Token</button>
-            </form>
-            {message && <p>{message}</p>}
+        <Container className="mt-4">
+            <Row>
+                <Col md={{ size: 6, offset: 3 }}>
+                    <h2><i className="bi bi-box-seam me-2"></i>Crear token de lot</h2>
+                    <Form onSubmit={mintToken} className="p-4 border rounded shadow-sm">
+                        <FormGroup>
+                            <Label for="idLot">ID Lot:</Label>
+                            <Input
+                                type="text"
+                                id="idLot"
+                                value={idLot}
+                                onChange={(e) => setIdLot(e.target.value)}
+                                required
+                                placeholder="Ej: LOT001"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="fabricant">Fabricant:</Label>
+                            <Input
+                                type="text"
+                                id="fabricant"
+                                value={fabricant}
+                                onChange={(e) => setFabricant(e.target.value)}
+                                required                                
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="nomLot">Nom lot:</Label>
+                            <Input
+                                type="text"
+                                id="nomLot"
+                                value={nomLot}
+                                onChange={(e) => setNomLot(e.target.value)}
+                                required                                
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="dataFabricacio">Data fabricació:</Label>
+                            <Input
+                                type="date"
+                                id="dataFabricacio"
+                                value={dataFabricacio}
+                                onChange={(e) => setDataFabricacio(e.target.value)}
+                                required
+                            />
+                        </FormGroup>
+                        <Button type="submit">Crear lot</Button>
+                    </Form>
+                    {message && <p>{message}</p>}
+                </Col>
+            </Row>
 
-            {/* Taula de Lots */}
-            <h2>Lots creats</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Lot</th>
-                        <th>Fabricant</th>
-                        <th>Nom lot</th>
-                        <th>Data fabricació</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {lots.map((lot, index) => (
-                        <tr key={index}>
-                            <td>{lot.idLot}</td>
-                            <td>{lot.fabricant}</td>
-                            <td>{lot.nomLot}</td>
-                            <td>{lot.dataFabricacio}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+            <Row className="mt-5">
+                <Col>
+                    <h2><i className="bi bi-list-task me-2"></i>Lots generats</h2>
+                    {lots.length > 0 ? (                    
+                        <Table hover responsive striped bordered className="mt-3 shadow-sm">
+                            <thead className="table-dark">
+                                <tr>
+                                    <th>ID Lot</th>
+                                    <th>Fabricant</th>
+                                    <th>Nom lot</th>
+                                    <th>Data fabricació</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {lots.map((lot, index) => (
+                                    <tr key={index}>
+                                        <td>{lot.idLot}</td>
+                                        <td>{lot.fabricant}</td>
+                                        <td>{lot.nomLot}</td>
+                                        <td>{lot.dataFabricacio}</td>
+                                     </tr>
+                                ))}  
+                            </tbody>
+                        </Table>
+                    ) : <CardText>No hi ha lots</CardText>}
+                    </Col>
+             </Row>
+        </Container>
     );
 }
 

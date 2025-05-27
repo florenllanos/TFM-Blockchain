@@ -11,6 +11,7 @@ import CartillaTK from './components/CartillaTK';
 import CartillaPacient from './components/CartillaPacient';
 import LotCentre from './components/LotCentre';
 import { Routes, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [userAccount, setUserAccount] = useState(null);

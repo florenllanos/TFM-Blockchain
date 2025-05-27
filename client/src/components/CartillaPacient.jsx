@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import CartillaTK from '../contratos/CartillaTK.json';
 
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+
 const cartillaContractAddress = process.env.REACT_APP_CARTILLATK; // Contracte de CartillaTK
 const cartillaContractABI = CartillaTK.abi;
 
@@ -10,8 +12,7 @@ function CartillaPacient({ cuenta }) {
     const [permisoBool, setPermisoBool] = useState(false);    
     const [direccionContrato, setDireccionContrato] = useState('');
     const [cartillaPacient, setCartillaPacient] = useState('');
-    const [vacunesPacient, setVacunesPacient] = useState([]);
-    //const [permisCartillaPacient, setPermisCartillaPacient] = useState(false);
+    const [vacunesPacient, setVacunesPacient] = useState([]);    
     const [message, setMessage] = useState('');    
 
     useEffect(() => {
@@ -38,11 +39,9 @@ function CartillaPacient({ cuenta }) {
 
     const fetchVacunesPacient = async (contract, account) => {
         try {
-            if (contract && account) {
-                console.log("FetchVacunesPacient", account);
+            if (contract && account) {                
                 const cartilla = await contract.getCartillaPacient(account);                
-                setCartillaPacient(cartilla);
-                console.log("Cartilla del pacient (idToken): ", cartilla.idToken);
+                setCartillaPacient(cartilla);                
 
                 const vacunesPacient = await contract.getDadesVacunesCartilla(cartilla.idToken);
                 setVacunesPacient(vacunesPacient);  
@@ -67,18 +66,10 @@ function CartillaPacient({ cuenta }) {
     };
 
     const permisCartilla = async (event) => {
-        /*if (!direccionContrato) {
-            setMessage("Seleccioni un compte");
-            return;
-        }*/
-        console.log("Llego a permisCartilla");
         const checked = event.target.checked;
-        console.log("Miro si es checked");
         try {
-            //setMessage("Donant permisos...");
             let tx;
-            let missatge;
-            console.log("Dentro del try del checked ", );
+            let missatge;            
             tx = await cartillaContract.setPermisAdministrar(cuenta, checked);
             if(checked) {
                 missatge = "Permisos concedits";                
@@ -90,65 +81,128 @@ function CartillaPacient({ cuenta }) {
             setMessage(missatge);
             setPermisoBool(checked);
 
-        } catch (error) {
-            console.error("Error al transferir el lote:", error);
+        } catch (error) {            
             setMessage(`Error: ${error.message}`);
         }
     };
 
-    const cambiaContrato = (event) => {
-        setDireccionContrato(event.target.value);
-    };
+  /*return (
+    <Container className="mt-4">
+      <Row className="mb-3 align-items-center">
+        <Col>
+          <Label check>
+            <Input
+              type="checkbox"
+              id="permisoBool"
+              checked={permisoBool}
+              onChange={permisCartilla}
+              className="me-2"
+            />
+            Permís per la cartilla
+          </Label>
+        </Col>
+      </Row>
 
-    return (
-        <div>
-            <div>
-                <label>
-                    <input
-                    type="checkbox"
-                    id="permisoBool"
-                    checked={permisoBool}
-                    onChange={permisCartilla}
-                    />
-                </label>
-            </div>            
+      {message && <p>{message}</p>}
 
-            {message && <p>{message}</p>}
+      <Row className="mt-4">
+        <Col>
+          <h2><i className="bi bi-shield-fill me-2"></i>Vacunes administrades</h2>
+        </Col>
+      </Row>
 
-            {/* Taula de vacunes per al pacient */}
-            <h2>Vacunes administrades</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Constracte Vacuna</th>
-                        <th>Id Vacuna</th>
-                        <th>Id Token Vacuna</th>
-                        <th>Id Vacuna</th>
-                        <th>Termolabil</th>
-                        <th>Temp conservació</th>
-                        <th>Data caducitat</th>
-                        <th>Asignada lot</th>
-                        <th>Administrada</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vacunesPacient.map((vacuna, index) => (
-                        <tr key={index}>
-                            <td>{vacuna.contracteVacuna}</td>
-                            <td>{vacuna.idVacunaToken}</td>
-                            <td>{vacuna.vacuna.idToken}</td>
-                            <td>{vacuna.vacuna.idVacuna}</td>
-                            <td>{vacuna.vacuna.termolabil}</td>
-                            <td>{vacuna.vacuna.tempConservacio}</td>
-                            <td>{vacuna.vacuna.dataCaducitat}</td>
-                            <td>{vacuna.vacuna.asignadaLot}</td>
-                            <td>{vacuna.vacuna.administrada}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+      <Row className="mt-3">
+        <Col>
+          <Table hover responsive striped bordered className="mt-3 shadow-sm">
+            <thead>
+              <tr>
+                <th>Contracte vacuna</th>
+                <th>Id vacuna Token</th>
+                <th>Id Vacuna</th>
+                <th>Termolàbil</th>
+                <th>Temp. conservació</th>
+                <th>Data Caducidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              {vacunesPacient.map((vacuna, index) => (
+                <tr key={index}>
+                  <td>{vacuna.contracteVacuna}</td>
+                  <td>{vacuna.idVacunaToken}</td>
+                  <td>{vacuna.vacuna.idVacuna}</td>
+                  <td>{vacuna.vacuna.termolabil ? 'Sí' : 'No'}</td>
+                  <td>{vacuna.vacuna.tempConservacio}</td>
+                  <td>{vacuna.vacuna.dataCaducitat}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+    </Container>
+  );*/
+
+  return (
+    <Container className="mt-4">
+      <Row>
+        <Col md={{ size: 8, offset: 2 }}>
+          <Form className="p-4 border rounded shadow-sm">
+            <FormGroup check className="mb-3">
+              <Label check>
+                <Input
+                  type="checkbox"
+                  id="permisoBool"
+                  checked={permisoBool}
+                  onChange={permisCartilla}
+                  className="me-2"
+                />
+                Permís per la cartilla
+              </Label>
+            </FormGroup>
+    
+            {message && <p className="text-info">{message}</p>}
+          </Form>
+        </Col>
+      </Row>
+    
+      <Row className="mt-5">
+        <Col md={{ size: 10, offset: 1 }}>
+          <h2>
+            <i className="bi bi-shield-fill me-2"></i>Vacunes administrades
+          </h2>
+    
+          {vacunesPacient.length > 0 ? (
+            <Table hover responsive striped bordered className="mt-3 shadow-sm">
+              <thead className="table-dark">
+                <tr>
+                  <th>Contracte vacuna</th>
+                  <th>Id vacuna Token</th>
+                  <th>Id Vacuna</th>
+                  <th>Termolàbil</th>
+                  <th>Temp. conservació</th>
+                  <th>Data Caducidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vacunesPacient.map((vacuna, index) => (
+                  <tr key={index}>
+                    <td>{vacuna.contracteVacuna}</td>
+                    <td>{vacuna.idVacunaToken}</td>
+                    <td>{vacuna.vacuna.idVacuna}</td>
+                    <td>{vacuna.vacuna.termolabil ? 'Sí' : 'No'}</td>
+                    <td>{vacuna.vacuna.tempConservacio}</td>
+                    <td>{vacuna.vacuna.dataCaducitat}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <CardText className="text-muted">No hi ha vacunes administrades.</CardText>
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 export default CartillaPacient;

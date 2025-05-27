@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import VacunaTK from '../contratos/VacunaTK.json'; // Importa el ABI.
 
-//const adresaContracte = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // Adreça contracte.
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+
 const adresaContracte = process.env.REACT_APP_VACUNATK; // Adreça contracte.
 const abiContracte = VacunaTK.abi;
 
@@ -13,7 +14,7 @@ function VacunaTKForm({ cuenta }) {
     const [dataCaducitat, setDataCaducitat] = useState('');
     const [contract, setContract] = useState(null);
     const [message, setMessage] = useState('');
-    const [vacunas, setVacunas] = useState([]); // Vacunas para mostrar las que se van creando.
+    const [vacunas, setVacunas] = useState([]); // Vacunes para mostrar las que es van creant.
 
     useEffect(() => {
         const initializeContract = async () => {
@@ -48,93 +49,119 @@ function VacunaTKForm({ cuenta }) {
 
     const mintToken = async (e) => {
         e.preventDefault();
-        if (!cuenta) {
-            console.log("Cuenta ", cuenta);
-            setMessage("Por favor, conecta tu wallet.");
+        if (!cuenta) {            
+            setMessage("Per favor, connecta el teu wallet.");
             return;
         }
 
         try {
-            console.log("Cuenta ", cuenta);
-            console.log("idVacuna ", idVacuna);
-            console.log("termolabil ", termolabil);
-            console.log("tempConservacio ", tempConservacio);
-            console.log("dataCaducitat ", dataCaducitat);
-            setMessage("Minting token...");            
+            setMessage("Registrant vacuna");            
             const tx = await contract.mint(cuenta, idVacuna, termolabil, tempConservacio, dataCaducitat);
             await tx.wait();
-            setMessage("Token minted successfully!");
-            // Limpiar el formulario
+            setMessage("Vacuna registrada amb èxit!");
+            // Neteja el formulari
             setIdVacuna('');
             setTermolabil(false);
             setTempConservacio(0);
             setDataCaducitat('');
 
-            // Actualizamos el listado de vacunas justo después de crear una.
+            // Actualitza llistat de vacunes just després de crear una.
             await fetchVacunes(contract, cuenta);
 
         } catch (error) {
-            console.error('Error minting token:', error);
+            console.error('Error registrant vacuna:', error);
             setMessage(`Error: ${error.message}`);
         }
     };
 
     return (
-        <div>
-            <h2>Crear token de vacuna</h2>
-            <form onSubmit={mintToken}>
-                <div>
-                    <label>ID Vacuna:</label>
-                    <input type="text" value={idVacuna} onChange={(e) => setIdVacuna(e.target.value)} required />
-                </div>
-                <div>
-                    <label>Termolábil:</label>
-                    <select value={termolabil} onChange={(e) => setTermolabil(e.target.value === 'true')}>
-                        <option value="false">No</option>
-                        <option value="true">Sí</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Temperatura Conservación:</label>
-                    <input type="number" value={tempConservacio} onChange={(e) => setTempConservacio(parseInt(e.target.value))} required />
-                </div>
-                <div>
-                    <label>Fecha Caducidad:</label>
-                    <input type="date" value={dataCaducitat} onChange={(e) => setDataCaducitat(e.target.value)} required />
-                </div>
-                <button type="submit">Mint Token</button>
-            </form>
-            {message && <p>{message}</p>}
+        <Container className="mt-4">
+            <Row>
+                <Col md={{ size: 6, offset: 3 }}>
+                    <h2><i className="bi bi-box-seam me-2"></i>Crear token de vacuna</h2>
+                    <Form onSubmit={mintToken} className="p-4 border rounded shadow-sm">
+                        <FormGroup>
+                            <Label for="idVacuna">ID Vacuna:</Label>
+                            <Input
+                                type="text"
+                                id="idVacuna"
+                                value={idVacuna}
+                                onChange={(e) => setIdVacuna(e.target.value)}
+                                required
+                                placeholder="Ej: VAC001"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="termolabil">Termolàbil:</Label>
+                            <Input
+                                type="select"
+                                id="termolabil"
+                                value={termolabil}
+                                onChange={(e) => setTermolabil(e.target.value === 'true')}
+                            >
+                                <option value="false">No</option>
+                                <option value="true">Si</option>
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="tempConservacio">Temperatura Conservació (°C):</Label>
+                            <Input
+                                type="number"
+                                id="tempConservacio"
+                                value={tempConservacio}
+                                onChange={(e) => setTempConservacio(e.target.value)}
+                                required
+                                placeholder="Ej: -70"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="dataCaducitat">Data Caducitat:</Label>
+                            <Input
+                                type="date"
+                                id="dataCaducitat"
+                                value={dataCaducitat}
+                                onChange={(e) => setDataCaducitat(e.target.value)}
+                                required
+                            />
+                        </FormGroup>
+                        <Button type="submit">Crear vacuna</Button>
+                    </Form>
+                    {message && <p>{message}</p>}
+                </Col>
+            </Row>
 
-            {/* Taula de Vacunas */}
-            <h2>Vacunes creats</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID vacuna</th>
-                        <th>Termolàbil</th>
-                        <th>Temperatura conservació</th>
-                        <th>Data caducitat</th>
-                        <th>Assignada Lot</th>
-                        <th>Administrada</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {vacunas
-                    .filter(vacuna => !vacuna.asignadaLot)
-                    .map((vacuna, index) => (
-                        <tr key={index}>
-                            <td>{vacuna.idVacuna}</td>
-                            <td>{vacuna.termolabil ? 'Sí' : 'No'}</td>
-                            <td>{vacuna.tempConservacio}</td>
-                            <td>{vacuna.dataCaducitat}</td>
-                            <td>{vacuna.asignadaLot ? 'Sí' : 'No'}</td>
-                            <td>{vacuna.administrada ? 'Sí' : 'No'}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+            <Row className="mt-5">
+                <Col>
+                    <h2><i className="bi bi-list-task me-2"></i>Vacunes generades (no asignades a lot)</h2>
+                    {vacunas.filter(vacuna => !vacuna.asignadaLot).length > 0 ? (
+                        <Table hover responsive striped bordered className="mt-3 shadow-sm">
+                            <thead className="table-dark">
+                                <tr>
+                                    <th>ID Vacuna</th>
+                                    <th>Termolàbil</th>
+                                    <th>Temp. Conservació (°C)</th>
+                                    <th>Data caducitat</th>
+                                    <th>Administrada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {vacunas
+                                    .filter(vacuna => !vacuna.asignadaLot)
+                                    .map((vacuna, index) => (
+                                        <tr key={index}>
+                                            <td>{vacuna.idVacuna}</td>
+                                            <td>{vacuna.termolabil ? 'Sí' : 'No'}</td>
+                                            <td>{vacuna.tempConservacio}</td>
+                                            <td>{vacuna.dataCaducitat}</td>
+                                            <td>{vacuna.administrada ? 'Sí' : 'No'}</td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </Table>
+                    ): <CardText>No hi ha vacunes</CardText>}
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

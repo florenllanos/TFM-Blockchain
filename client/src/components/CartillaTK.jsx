@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import CartillaTK from '../contratos/CartillaTK.json'; // Importa el ABI.
 
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+
 const adresaContracte = process.env.REACT_APP_CARTILLATK; // Adreça contracte.
 const abiContracte = CartillaTK.abi;
 
@@ -29,11 +31,10 @@ function CartillaTKForm({ cuenta }) {
         initializeContract();
     }, [cuenta]);
 
-    const mintToken = async (e) => {
-        console.log("Hemos hecho submit del formulario");
+    const mintToken = async (e) => {        
         e.preventDefault();
-        if (!direccionContrato) {
-            console.log("direccionContrato ", direccionContrato);
+        console.log("direccion contrato ", direccionContrato);
+        if (!direccionContrato) {            
             setMessage("Ha de indicar el contracte de un pacient.");
             return;
         }
@@ -63,32 +64,38 @@ function CartillaTKForm({ cuenta }) {
     };
 
     return (
-        <div>
-            <h2>Creat cartilla a pacient</h2>
-            <form onSubmit={mintToken}>
-                <div>
-                    <label htmlFor="direccionContrato">Adreça contracte destí:</label>
-                        <input
-                        type="text"
-                        id="direccionContrato"
-                        value={direccionContrato}
-                        onChange={cambiaContrato}
-                        placeholder="Ej: 0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
-                        />
-                </div>
-                <div>
-                    <label htmlFor="cipHash">CIP:</label>
-                        <input
-                        type="text"
-                        id="cipHash"
-                        value={cipHash}
-                        onChange={cambiaCip}
-                        />
-                </div>
-                <button type="submit">Mint Token</button>
-            </form>
-            {message && <p>{message}</p>}            
-        </div>
+        <Container className="mt-4">
+            <Row>
+                <Col md={{ size: 6, offset: 3 }}>
+                    <h2><i className="bi bi-box-seam me-2"></i>Crear cartilla a pacient</h2>
+                    <Form onSubmit={mintToken} className="p-4 border rounded shadow-sm">
+                        <FormGroup>
+                            <Label for="direccionContrato">Adreça contracte destí:</Label>
+                            <Input
+                                type="text"
+                                id="direccionContrato"
+                                value={direccionContrato}
+                                onChange={cambiaContrato}
+                                placeholder="Ej: 0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="cipHash">CIP:</Label>
+                            <Input
+                                type="text"
+                                id="cipHash"
+                                value={cipHash}
+                                onChange={cambiaCip}
+                            />
+                        </FormGroup>
+                        <Button type="submit">Crear cartilla</Button>
+                    </Form>
+                    {message && <p>{message}</p>}
+                </Col>
+            </Row>
+
+        </Container>
+
     );
 }
 
