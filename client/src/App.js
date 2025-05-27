@@ -12,6 +12,7 @@ import CartillaPacient from './components/CartillaPacient';
 import LotCentre from './components/LotCentre';
 import { Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Capcelera from './components/Capcelera';
 
 function App() {
   const [userAccount, setUserAccount] = useState(null);
@@ -25,8 +26,9 @@ function App() {
     }    
   };
   
-  return (
+  return (    
     <div className="App">
+      <Capcelera />
       <WalletConnectButton cuentaConectada={ handleConnect } />
       <Routes>        
         <Route path="/vacuna" element = { <VacunaTK cuenta={ userAccount } /> } />
