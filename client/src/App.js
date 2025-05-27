@@ -29,9 +29,10 @@ function App() {
   return (    
     <div className="App">
       <Capcelera />
-      <WalletConnectButton cuentaConectada={ handleConnect } />
+      <WalletConnectButton cuentaConectada={ handleConnect } />    
+      
       <Routes>        
-        <Route path="/vacuna" element = { <VacunaTK cuenta={ userAccount } /> } />
+        <Route path="/" element = { <VacunaTK cuenta={ userAccount } /> } />
         <Route path="/lot" element = { <LotTK cuenta={ userAccount } /> } />
         <Route path="/transferir-vacuna-lot" element = { <TransferirVacunaLote cuenta={ userAccount } /> } />
         <Route path="/transferir-lot" element = { <TransferirLote cuenta={ userAccount } /> } />
@@ -39,9 +40,11 @@ function App() {
         <Route path="/cartilla" element = { <CartillaTK cuenta={ userAccount } /> } />
         <Route path="/cartilla-pacient" element = { <CartillaPacient cuenta={ userAccount } /> } />
         <Route path="/lot-centre" element = { <LotCentre cuenta={ userAccount } /> } />
-      </Routes>
+      </Routes>      
     </div>
+    
   );
+  
 }
 
 export default App;

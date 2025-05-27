@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, NavbarBrand, Container } from 'reactstrap';
+import { Navbar, NavbarBrand, Container, Nav, NavItem, NavLink } from 'reactstrap';
 import logo from '../assets/Logo.png';
 
 const Capcelera = () => (
@@ -14,6 +14,29 @@ const Capcelera = () => (
         />
         BlockVac
       </NavbarBrand>
+      <Nav className="me-auto" navbar>
+        <NavItem>
+          <NavLink href="/">Vacuna</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/lot/">Lot</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/transferir-vacuna-lot/">Transferir vacuna-lot</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/transferir-lot/">Transferir-lot</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/cartilla/">Cartilla</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/cartilla-pacient/">Cartilla-pacient</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink href="/lot-centre/">Lot-centre</NavLink>
+        </NavItem>        
+      </Nav>
     </Container>
   </Navbar>
 );
