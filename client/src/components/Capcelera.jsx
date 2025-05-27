@@ -8,7 +8,7 @@ const Capcelera = () => (
       <NavbarBrand href="/">
         <img
           src={logo}
-          alt="Logo"
+          alt="https://creativecommons.org/licenses/by/4.0/"
           height="40"
           className="me-2"
         />
