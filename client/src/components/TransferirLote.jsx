@@ -68,58 +68,6 @@ function TransferirLote({ cuenta }) {
         setDireccionContrato(event.target.value);
     };
 
-    /*return (
-        <>
-            <Container className="mt-4">
-                <Row className="mt-5">
-                    <Col>
-                        <h2>
-                            <i className="bi bi-list-task me-2"></i>Transferir Lot:
-                        </h2>
-                    </Col>
-                </Row>
-                <Row className="mb-3">
-                    <Col>
-                        <Label for="selectLot">Seleccionar lot:</Label>
-                        <Input
-                            type="select"
-                            id="selectLot"
-                            value={selectedLotId}
-                            onChange={(e) => setSelectedLotId(e.target.value)}
-                        >
-                            <option value="">Selecciona un lote</option>
-                            {lotes.map((lote) => (
-                                <option key={lote.idToken} value={lote.idToken}>
-                                    {lote.idLot}
-                                </option>
-                            ))}
-                        </Input>
-                    </Col>
-                </Row>
-                <Row className="mb-3 align-items-center">
-                    <Col md={2}>
-                        <Label for="direccionContrato">Adreça del contracte destí:</Label>
-                    </Col>
-                    <Col md={10}>
-                        <Input
-                            type="text"
-                            id="direccionContrato"
-                            value={direccionContrato}
-                            onChange={cambiaContrato}
-                            placeholder="Ej: 0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
-                        />
-                    </Col>
-                </Row>
-                <Row className="mt-4">
-                    <Col className="text-center">
-                        <Button onClick={transferirLot}>Transferir Lot</Button>
-                    </Col>
-                </Row>
-                {message && <p>{message}</p>}
-            </Container>
-        </>
-    );*/
-
     return (
         <Container className="mt-4">
     <Row className="mt-5">
@@ -158,7 +106,7 @@ function TransferirLote({ cuenta }) {
                 </FormGroup>
 
                 <div className="text-center mt-4">
-                    <Button color="primary" onClick={transferirLot} disabled={!selectedLotId || !direccionContrato}>
+                    <Button onClick={transferirLot} disabled={!selectedLotId || !direccionContrato}>
                         Transferir Lot
                     </Button>
                 </div>

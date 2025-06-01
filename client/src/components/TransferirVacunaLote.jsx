@@ -91,66 +91,6 @@ function TransferirVacunaLote({ cuenta }) {
         }
     };
 
-    /*return (
-        <>
-            <Container className="mt-4">
-                <Row className="mt-5">
-                    <Col>
-                        <h2><i className="bi bi-list-task me-2"></i>Seleccionar lot de destí:</h2>
-                        {lotes.length > 0 ? (
-                            <Table hover responsive striped bordered className="mt-3 shadow-sm">
-                                <thead className="table-dark">
-                                    <tr>
-                                        <th>Seleccionar</th>
-                                        <th>Id lot</th>
-                                        <th>Id token lot</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {lotes.map((lote) => (
-                                        <tr>
-                                            <td>
-                                                <input
-                                                    type="radio"
-                                                    name="selectedLotRadio"
-                                                    value={lote.idToken ? lote.idToken.toString() : ''}
-                                                    checked={selectedLotId === (lote.idToken ? lote.idToken.toString() : '')}
-                                                    onChange={handleLotSelect} />
-                                            </td>
-                                            <td>{lote.idLot}</td>
-                                            <td>{lote.idToken}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        ) : <CardText>No hi ha lots disponibles.</CardText>}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label>Seleccionar vacuna: </Label>
-                        <select value={selectedVacunaId} onChange={(e) => setSelectedVacunaId(e.target.value)}>
-                            <option value="">Selecciona una vacuna</option>
-                            {vacunas
-                                .filter(vacuna => !vacuna.asignadaLot)
-                                .map((vacuna, index) => (
-                                    <option key={index} value={vacuna.idToken}>
-                                        {vacuna.idVacuna}
-                                    </option>
-                                ))}
-                        </select>
-                        {message && <p>{message}</p>}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Button onClick={transferirVacuna}>Transferir Vacuna</Button>
-                    </Col>
-                </Row>
-            </Container>
-        </>
-    ); */
-
     return (
         <Container className="mt-4">
     <Row className="mt-5">
@@ -213,8 +153,8 @@ function TransferirVacunaLote({ cuenta }) {
 
                 {message && <p className="text-info">{message}</p>}
 
-                <Button color="primary" onClick={transferirVacuna} disabled={!selectedVacunaId || !selectedLotId}>
-                    Transferir Vacuna
+                <Button onClick={transferirVacuna} disabled={!selectedVacunaId || !selectedLotId}>
+                    Transferir vacuna
                 </Button>
             </Form>
         </Col>
