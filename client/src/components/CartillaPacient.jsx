@@ -86,62 +86,6 @@ function CartillaPacient({ cuenta }) {
         }
     };
 
-  /*return (
-    <Container className="mt-4">
-      <Row className="mb-3 align-items-center">
-        <Col>
-          <Label check>
-            <Input
-              type="checkbox"
-              id="permisoBool"
-              checked={permisoBool}
-              onChange={permisCartilla}
-              className="me-2"
-            />
-            Permís per la cartilla
-          </Label>
-        </Col>
-      </Row>
-
-      {message && <p>{message}</p>}
-
-      <Row className="mt-4">
-        <Col>
-          <h2><i className="bi bi-shield-fill me-2"></i>Vacunes administrades</h2>
-        </Col>
-      </Row>
-
-      <Row className="mt-3">
-        <Col>
-          <Table hover responsive striped bordered className="mt-3 shadow-sm">
-            <thead>
-              <tr>
-                <th>Contracte vacuna</th>
-                <th>Id vacuna Token</th>
-                <th>Id Vacuna</th>
-                <th>Termolàbil</th>
-                <th>Temp. conservació</th>
-                <th>Data Caducidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vacunesPacient.map((vacuna, index) => (
-                <tr key={index}>
-                  <td>{vacuna.contracteVacuna}</td>
-                  <td>{vacuna.idVacunaToken}</td>
-                  <td>{vacuna.vacuna.idVacuna}</td>
-                  <td>{vacuna.vacuna.termolabil ? 'Sí' : 'No'}</td>
-                  <td>{vacuna.vacuna.tempConservacio}</td>
-                  <td>{vacuna.vacuna.dataCaducitat}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
-    </Container>
-  );*/
-
   return (
     <Container className="mt-4">
       <Row>
@@ -160,7 +104,7 @@ function CartillaPacient({ cuenta }) {
               </Label>
             </FormGroup>
     
-            {message && <p className="text-info">{message}</p>}
+            {message && <p>{message}</p>}
           </Form>
         </Col>
       </Row>

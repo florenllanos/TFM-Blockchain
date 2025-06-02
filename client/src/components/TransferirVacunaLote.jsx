@@ -151,7 +151,7 @@ function TransferirVacunaLote({ cuenta }) {
                     </Input>
                 </FormGroup>
 
-                {message && <p className="text-info">{message}</p>}
+                {message && <p>{message}</p>}
 
                 <Button onClick={transferirVacuna} disabled={!selectedVacunaId || !selectedLotId}>
                     Transferir vacuna

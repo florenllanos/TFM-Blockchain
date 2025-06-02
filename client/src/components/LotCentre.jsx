@@ -97,7 +97,7 @@ function LotCentre({ cuenta }) {
             return;
         }
 
-        try { //TODO: acabar transferencia de vacuna.
+        try {
             setMessage("Administrando vacuna...");
             // idTokenPadre, adresaDest, contracteFill, idTokenFill, _dataIdTokenDesti
             console.log("Id token paciente ", padLeft32Zero(idTokenPacient, 16));
@@ -160,7 +160,7 @@ function LotCentre({ cuenta }) {
                             </thead>
                             <tbody>
                                 {vacunas
-                                    .filter(vacuna => vacuna.idVacunaToken !== 0)
+                                    .filter(vacuna => vacuna.idVacunaToken != 0)
                                     .map((vacuna, index) => (
                                         <tr key={index}>
                                             <td>
@@ -201,7 +201,6 @@ function LotCentre({ cuenta }) {
                             </FormGroup>
 
                             <Button
-                                color="primary"
                                 onClick={administerVacuna}
                                 disabled={!selectedVacunaToAdminister}
                             >

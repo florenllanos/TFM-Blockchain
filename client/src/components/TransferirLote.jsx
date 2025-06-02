@@ -111,7 +111,7 @@ function TransferirLote({ cuenta }) {
                     </Button>
                 </div>
 
-                {message && <p className="mt-3 text-info">{message}</p>}
+                {message && <p>{message}</p>}
             </Form>
         </Col>
     </Row>
