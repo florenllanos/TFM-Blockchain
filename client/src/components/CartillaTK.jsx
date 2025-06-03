@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import CartillaTK from '../contratos/CartillaTK.json'; // Importa el ABI.
+import SHA256 from 'crypto-js/sha256';
 
-import {Container, Row, Col, Form, FormGroup, Label, Input, Button, Table, CardText} from 'reactstrap';
+import {Container, Row, Col, Form, FormGroup, Label, Input, Button} from 'reactstrap';
 
 const adresaContracte = process.env.REACT_APP_CARTILLATK; // Adreça contracte.
 const abiContracte = CartillaTK.abi;
@@ -40,10 +41,10 @@ function CartillaTKForm({ cuenta }) {
         }
 
         try {
-            setMessage("Generant cartilla");            
-            const tx = await contract.mint(direccionContrato, cipHash);
+            setMessage("Generant cartilla");           
+            const tx = await contract.mint(direccionContrato, SHA256(cipHash).toString());
             const res = await tx.wait();
-
+            console.log("Cip hash ", SHA256(cipHash).toString());
             setMessage(`Cartilla creada i assignada a pacient: ${cipHash}`);
             // Neteja formulari.
             setDireccionContrato('');
